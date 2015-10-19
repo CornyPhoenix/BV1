@@ -2,12 +2,10 @@
 """
 Module:
 =======
-
 Bildverarbeitung 1
 
 Exercise: 
 =========
-
 E01 - Getting started
 
 Authors:
