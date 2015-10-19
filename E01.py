@@ -10,8 +10,8 @@ E01 - Getting started
 
 Authors:
 ========
-Toprak,  Sibel      (67.....)
-Brand,   Axel       (6......)
+Toprak,  Sibel      (6712316)
+Brand,   Axel       (6145101)
 Möllers, Konstantin (6313136)
 
 """
