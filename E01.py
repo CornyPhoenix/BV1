@@ -1,4 +1,22 @@
 # -*- coding: utf-8 -*-
+"""
+Module:
+=======
+
+Bildverarbeitung 1
+
+Exercise: 
+=========
+
+E01 - Getting started
+
+Authors:
+========
+Toprak,  Sibel      (67.....)
+Brand,   Axel       (6......)
+Möllers, Konstantin (6313136)
+
+"""
 
 import numpy
 from scipy import ndimage
@@ -32,16 +50,19 @@ def mirrorHorizontally(image):
         
     return result
 
-def mirror(image, horizontal):
+def mirror(image, horizontal, vertical):
     """
-    Mirrors an image.
+    Mirrors an image. Pass boolean parameters to this function.
     """
     if horizontal:
-        return mirrorHorizontally(image)
+        image = mirrorHorizontally(image)
         
-    return mirrorVertically(image)
+    if vertical:
+        image = mirrorVertically(image)
+        
+    return image
 
 # Example image from scipy
 l = misc.lena()
-m = mirror(l, horizontal=False)
+m = mirror(l, horizontal=False, vertical=False)
 plt.imshow(m, cmap=plt.cm.gray)
