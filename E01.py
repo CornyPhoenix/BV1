@@ -19,8 +19,36 @@ Möllers, Konstantin (6313136)
 from scipy import misc
 import matplotlib.pyplot as plt
 
+# Example image from scipy
+l = misc.lena()
+plt.axis('off')
+plt.imshow(l, cmap=plt.cm.gray)
+plt.show()
 
-def mirror(image, horizontal, vertical):
+"""
+2 IMAGE TRANSFORMATION
+"""
+
+# For 2a)
+def mirror_horizontally(image):
+    return image[..., ::-1]
+    
+def mirror(image):
+    """
+    Mirrors an image horizontally.
+    """
+    return mirror_horizontally(image)
+    
+m = mirror(l)
+plt.axis('off')
+plt.imshow(m, cmap=plt.cm.gray)
+plt.show()
+
+# For 2b)    
+def mirror_vertically(image):
+    return image[::-1, ...]
+
+def mirror(image, horizontal = True, vertical = False):
     """
     Mirrors an image. Pass boolean parameters to this function.
     Image arrays are multidimensional arrays. When accessing with Python [] as seen in slides, we can access the different
@@ -35,20 +63,27 @@ def mirror(image, horizontal, vertical):
     Lists are immutable so we do a shallow copy of the element, we could save the view without overriding the original image.
     Any changes to the original image(the color values, not the ordering) should still be shown in the flipped view.
 
-    If this is not desired we need to make a DEEP COPY of the original object-
+    If this is not desired we need to make a DEEP COPY of the original object.
     """
 
     if horizontal:
-        image = image[..., ::-1]
+        image = mirror_horizontally(image)
 
     if vertical:
-        image = image[::-1, ...]
+        image = mirror_vertically(image)
 
     return image
 
-# Example image from scipy
-l = misc.lena()
-m = mirror(l, horizontal=True, vertical=False)
+
+m = mirror(l, horizontal=False, vertical=True)
+plt.axis('off')
+plt.imshow(l, cmap=plt.cm.gray)
+plt.show()
+plt.axis('off')
 plt.imshow(m, cmap=plt.cm.gray)
-# needed in intelliJ to show plots and in spyder if we want to display more than one image plot
+plt.show()
+
+m = mirror(l, horizontal=True, vertical=False)
+plt.axis('off')
+plt.imshow(m, cmap=plt.cm.gray)
 plt.show()
