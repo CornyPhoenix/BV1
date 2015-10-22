@@ -20,6 +20,7 @@ from __future__ import division
 import colorsys
 
 import numpy as np
+
 from scipy import misc
 import matplotlib.pyplot as plt
 
@@ -106,10 +107,46 @@ class E02:
     """
 
     def exercise1a(self):
+        """
+        Photometry
+        """
         pass
 
     def exercise1b(self):
-        pass
+        """
+        TV Images
+        """
+        # 5m in reality correspond to 50px on screen:
+        pixels_per_meter = 10
+
+        # The Car has a velocity of 50km/h in reality:
+        velocity_reality = 50
+        print 'Velocity in reality:   ', velocity_reality, '[km/h]'
+
+        # An hour has 3,600 seconds, so 3,600,000 it has ms:
+        ms_per_hour = 3600 * 1000
+
+        # We calculate the conversion factor for px/ms on the screen from km/h:
+        kmh_to_pxms = 1000 * pixels_per_meter / ms_per_hour
+
+        # The velocity on screen in px/ms is now the converted velocity in reality given in km/h:
+        velocity_screen = velocity_reality * kmh_to_pxms
+        print 'Velocity on screen:    ', velocity_screen, '[px/ms]'
+
+        # v = s/t. We are looking for s = v * t.
+        # Time t is the time that half of a picture needs to get rendered, because we have interlaced mode
+        # and so from line 200 to 201 first all rows 202, 204, 206, ..., 574, 576, 1, 3, 5, ..., 197, 199
+        # get rendered until we reach line 201, so these are 576 / 2 = 288 rows. The script says, that one
+        # line needs 64ms to render.
+        time_per_row = 64  # ms
+        number_of_rows = 576 / 2
+        time = time_per_row * number_of_rows
+        print '∆t from l. 200 to 201: ', time, '[ms]'
+
+        # offset = velocity on screen * time difference
+        offset = velocity_screen * time
+
+        print 'Offset in Pixels:      ', offset, '[px]'
 
     """
     2. COLOR PERCEPTION
@@ -138,6 +175,7 @@ class E02:
         misc.imsave("B2.png", self.b2)
         misc.imsave("B2_Brightness.png", print_brightness(self.b2))
 
+
 if __name__ == '__main__':
     e02 = E02()
 
@@ -145,4 +183,3 @@ if __name__ == '__main__':
     e02.exercise1b()
     e02.exercise2a()
     e02.exercise2b()
-
