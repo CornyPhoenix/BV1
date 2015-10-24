@@ -11,6 +11,7 @@ E02 - Image formation
 Authors:
 ========
 Toprak,  Sibel      (6712316)
+Elfaramawy, Nourhan (6517858)
 Brand,   Axel       (6145101)
 Möllers, Konstantin (6313136)
 
