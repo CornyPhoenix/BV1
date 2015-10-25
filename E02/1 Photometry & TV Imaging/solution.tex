@@ -1,10 +1,15 @@
-\documentclass[a4paper]{article}
+% !TeX spellcheck = en_US
+\documentclass[a4paper,12pt]{article}
 
 \usepackage{fullpage}
 \usepackage{fourier}
+\usepackage{amsmath}
+\usepackage{color}
+
+\newcommand{\twodo}[1]{\textcolor{red}{\textbf{todo:} #1}}
 
 \title{\textbf{Exercises for Image Processing 1}\\Problem Sheet 2}
-\author{Axel Brand\\6145101 \and Nour Elfaramawy\\ \and Konstantin M\"ollers\\6313136 \and Sibel Toprak\\6712316}
+\author{Axel Brand\\6145101 \and Nour Elfaramawy\\6517858 \and Konstantin M\"ollers\\6313136 \and Sibel Toprak\\6712316}
 
 \begin{document}
 	\maketitle
@@ -14,4 +19,27 @@
 	\subsection{Photometry}
 	
 	\subsection{TV Images}
+	We know that 25 full frames (50 half frames) are shown per second in the PAL standard and that 1 full frame consists of 625 rows\footnote{see last slide of Lecture 3, Image Understanding and Image Formation}. Hence, we can compute the time it takes for one row to be \twodo{recorded/ shown (?)} like so:
+	\begin{align*}
+		\frac{1 s}{25 \cdot 625} = 0.000064 s = 64\mu s
+	\end{align*}
+	
+	We also know that 1 meter in the real world translates to 10 pixels in the TV image\footnote{See ``The camera optics depict a car of 5m length in 50 pixels'' in the task description}. Based on that, we can convert the velocity of the car moving parallel to the image plane given in $\frac{km}{h}$ into $\frac{px}{\mu s}$:
+	\begin{align*}
+		50 \frac{km}{h} \Rightarrow 50,000 \frac{m}{h} \Rightarrow 500,000 \frac{px}{h} \Rightarrow \frac{5 \cdot 10^{5}}{3.6 \cdot 10^{9}} \frac{px}{\mu s} = 0.00013\overline{8} \frac{px}{\mu s}
+	\end{align*}
+	
+	The number of lines lying between the lines 200 and 201 is equivalent to half a visible frame, because the uneven numbered lines starting at line 201 ($201, 203, 205, \dots, 575$) are recorded before the even numbered ones until line 200 ($2, 4, 6, \dots, 200$) in interlaced mode. Knowing that the visible frame comprises 576 rows, the lapse of time between recording the lines 200 and 201 and would be:
+	\begin{align*}
+	\frac{576}{2} \cdot 64\mu s = 288 \cdot 64\mu s = 18,432 \mu s
+	\end{align*}
+	
+	Now, to compute the offset in pixels between the front end of the car in line 200 and in line 201, we multiply this lapse of time with the velocity previously converted into $\frac{px}{\mu s}$, resulting in an offset of about 3 pixels:
+	
+	\begin{align*}
+	offset = 0.00013\overline{8} \frac{px}{\mu s} \cdot 18,432 \mu s = 2.56 px
+	\end{align*}
+	
+	\twodo{The first half of the computation was done using the number of rows in the full frame, while the second part is based on the visible frame. Is this ok?}
+	
 \end{document}
