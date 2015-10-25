@@ -5,6 +5,7 @@
 \usepackage{fourier}
 \usepackage{amsmath}
 \usepackage{color}
+\usepackage{graphicx}
 
 \newcommand{\twodo}[1]{\textcolor{red}{\textbf{todo:} #1}}
 
@@ -17,7 +18,25 @@
 	\section{Photometry and TV Imaging}
 	
 	\subsection{Photometry}
+	 For steps of a staircase to become 'invisible' or indistinguishable from another, the pixels forming the individual steps of the staircase need to 'blend/melt' into each other: there is a very low contrast between color/ brightness levels, forming a homogeneous mass. Several components are affecting individual pixel brightness in images and can contribute to this effect:
+	 
+	\begin{description}
+		\item[illumination (spectral energy)] Very high illumination could lead to the scene not having intense shadows, which makes steps not as distinguishable (this depends on the geometry of the light source and angles the light shines on the stairs). Very low illumination makes color values harder to distinguish in many scenarios (low spectral intensity) and also has an effect on many sensors.
+		
+		\item[object surface properties] Object surfaces have an extreme impact on the ability to recognize shapes. A very smooth or homogeneous texture contributes to not being able to distinguish the step. It also affects if the light hitting the surface is rather \emph{absorbed, reflected or scattered}.	This in turn has an effect on the distinction of shadows thrown by the Object. 
+				\begin{figure}[h!]
+					\caption{Homogeneous staircase}	
+					\centering
+					\includegraphics[scale=0.5]{homogene_treppe.JPG} 
+				\end{figure}
+				
+		\item[sensor properties] Different sensors have varying color sensitivity properties (CCD vs CMOS) and are also more or less affected by illumination.
+		\item[geometry of light source] This can contribute to the object not throwing many shadows on certain angles light direction. A very smooth distribution of light will boost surface properties causing the described effect.
+		\item[transparency of irradiated medium] Dust, Smoke etc. will influence the sensors.
+	\end{description}
 	
+	\twodo{When searching about photometric laws BRDF(Bi-directional Reflectance Distribution Function) is always named, anybody understanding it well enough to say something about the way it contributes here? }
+		
 	\subsection{TV Images}
 	We know that 25 full frames (50 half frames) are shown per second in the PAL standard and that 1 full frame consists of 625 rows\footnote{see last slide of Lecture 3, Image Understanding and Image Formation}. Hence, we can compute the time it takes for one row to be \twodo{recorded/ shown (?)} like so:
 	\begin{align*}
