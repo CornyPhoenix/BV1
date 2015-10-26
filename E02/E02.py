@@ -124,15 +124,15 @@ class E02:
         velocity_reality = 50
         print 'Velocity in reality:   ', velocity_reality, '[km/h]'
 
-        # An hour has 3,600 seconds, so 3,600,000 it has ms:
-        ms_per_hour = 3600 * 1000
+        # An hour has 3,600 seconds, so 3,600,000,000 it has ms:
+        micros_per_hour = 3600 * 1000000
 
         # We calculate the conversion factor for px/ms on the screen from km/h:
-        kmh_to_pxms = 1000 * pixels_per_meter / ms_per_hour
+        kmh_to_pxmicros = 1000 * pixels_per_meter / micros_per_hour
 
         # The velocity on screen in px/ms is now the converted velocity in reality given in km/h:
-        velocity_screen = velocity_reality * kmh_to_pxms
-        print 'Velocity on screen:    ', velocity_screen, '[px/ms]'
+        velocity_screen = velocity_reality * kmh_to_pxmicros
+        print 'Velocity on screen:    ', velocity_screen, '[px/μs]'
 
         # v = s/t. We are looking for s = v * t.
         # Time t is the time that half of a picture needs to get rendered, because we have interlaced mode
@@ -142,7 +142,7 @@ class E02:
         time_per_row = 64  # ms
         number_of_rows = 576 / 2
         time = time_per_row * number_of_rows
-        print '∆t from l. 200 to 201: ', time, '[ms]'
+        print '∆t from l. 200 to 201: ', time, '[μs]'
 
         # offset = velocity on screen * time difference
         offset = velocity_screen * time
