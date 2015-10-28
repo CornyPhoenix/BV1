@@ -109,6 +109,8 @@ docs/_build/
 # PyBuilder
 target/
 
-E02/1 Photometry & TV Imaging/solution.aux
-E02/1 Photometry & TV Imaging/solution.pdf
-E02/1 Photometry & TV Imaging/solution.synctex.gz
+# LaTeX
+*.aux
+*.pdf
+*.synctex.gz
+*.out

@@ -26,57 +26,79 @@ from scipy import misc
 import matplotlib.pyplot as plt
 
 
-def mandelbrot(width, height, bg_color, fg_color):
+def mandelbrot(width, height, colors, inf_color, zoom = 2, xshift = 0.5, yshift = 0.0):
     """
     Creates a Mandelbrot set with a specified width and height.
     The background and the foreground color can be given.
     """
+    # Create an image array.
     image = np.zeros((height, width, 3), dtype=np.uint8)
-    m = width / 2
-    n = height / 2
+    
+    m = int(width / 2)  # Half image width
+    n = int(height / 2) # half image height
+    
+    mx = 200 # Maximum number of iterations
+    clrlen = (len(colors) - 1) / mx # multiplicator for the color mapping
+    
+    # y is a coordinate on the image plane going from top to bottom.
     for y in range(height):
-        y2 = (y - n) / height * -2
+        # y2 is a coordinate on the Mandelbrot plane going from bottom to top.
+        y2 = (n - y) / height * zoom - yshift
+        
+        # x is a coordinate on the image plane going from left to right.
         for x in range(width):
-            x2 = (x - m) / height * 2 - 0.5
+            # x2 is a coordinate on the Mandelbrot plane going from left to right.
+            x2 = (x - m) / height * zoom - xshift
 
-            ok = True
-            image[y][x] = bg_color
-
+            # Reset the Mandelbrot iterations
             zx = 0
             zy = 0
 
+            # Precalculations of products for first iteration
             xx = zx * zx
             yy = zy * zy
             xy = zx * zy
 
-            for c in range(19):
+            # Use infinity color first.
+            image[y][x] = inf_color
+            
+            for c in range(mx):
                 zx = xx - yy + x2
                 zy = xy + xy + y2
 
+                # Precalculations of products for next iteration
                 xx = zx * zx
                 yy = zy * zy
                 xy = zx * zy
 
+                # Do the coordinates leave the allowed circle?
+                # Pick a color for the number of iterations.
                 if xx + yy > 4:
-                    ok = False
+                    image[y][x] = colors[int(round(c * clrlen))]
                     break
-
-            if ok:
-                image[y][x] = fg_color
 
     return image
 
 
 def rgb_to_hls(rgb):
+    """
+    Converts an array with RGB values to the HLS color model.
+    """
     return colorsys.rgb_to_hls(rgb[0] / 255, rgb[1] / 255, rgb[2] / 255)
 
 
 def brightness(rgb):
+    """
+    Returns a greyvalue in 0..255 that can be used for an image pixel.
+    """
     # return (min(rgb) + max(rgb)) / 2
     return rgb_to_hls(rgb)[1] * 255
 
 
 def print_brightness(image):
+    """
+    Creates a brightness showing greyscale image from an input.
+    """
     target = image.copy()
     for y in range(len(image)):
         for x in range(len(image[y])):
@@ -86,13 +108,21 @@ def print_brightness(image):
     return target
 
 
-def calibrate_image(image):
-    tl = 0.5  # target brightness
+def calibrate_image(image, tl = 0.5):
+    """
+    Calibrates an image so that all colors get the same target brightness
+    value `tl` (defaults to 0.5).
+    """
     for y in range(len(image)):
         for x in range(len(image[y])):
+            # Convert the exiting pixel color to HLS model.
             h, l, s = rgb_to_hls(image[y, x])
 
+            # We convert the HLS model back to RGB, but using our target 
+            # brightness value `tl`.
             r, g, b = colorsys.hls_to_rgb(h, tl, s)
+            
+            # Set the new pixel color.
             image[y][x] = [r * 255, g * 255, b * 255]
 
     return image
@@ -102,16 +132,6 @@ class E02:
     def __init__(self):
         self.b1 = None
         self.b2 = None
-
-    """
-    1. PHOTOMETRY & TV IMAGING
-    """
-
-    def exercise1a(self):
-        """
-        Photometry
-        """
-        pass
 
     def exercise1b(self):
         """
@@ -158,7 +178,18 @@ class E02:
         Generate a color image B1 with non-calibrated colors (i.e. arbitrary colors with different brightness values).
         Determine the brightness values of background and color areas.
         """
-        self.b1 = mandelbrot(600, 400, [255, 125, 125], [0, 255, 0])
+        colors = [
+            [253, 253, 150],
+            [255, 125, 125],
+            [150, 111, 214],
+            [119, 158, 203],
+            [255, 105,  97],
+            [  3, 192,  60]
+        ]
+        # This takes some time …
+        #self.b1 = mandelbrot(1200, 600, colors, [0, 0, 0], 0.02, 0.73, 0.21)
+        # Load the pregenerated image ;)
+        self.b1 = misc.imread("B1.png")
         plt.axis('off')
         plt.imshow(self.b1)
         plt.show()
@@ -180,7 +211,6 @@ class E02:
 if __name__ == '__main__':
     e02 = E02()
 
-    e02.exercise1a()
     e02.exercise1b()
     e02.exercise2a()
     e02.exercise2b()
