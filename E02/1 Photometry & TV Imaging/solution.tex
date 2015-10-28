@@ -21,27 +21,31 @@
 	\section{Photometry and TV Imaging}
 	
 	\subsection{Photometry}
-	 For steps of a staircase to become 'invisible' or indistinguishable from another, the pixels forming the individual steps of the staircase need to 'blend/melt' into each other: there is a very low contrast between color/ brightness levels, forming a homogeneous mass. Several components are affecting individual pixel brightness in images and can contribute to this effect:
+	 For the steps of a staircase to become 'invisible' or indistinguishable from another, the pixels forming the individual steps of the staircase need to 'blend/melt' into each other: there is a very low contrast between color/ brightness levels, forming a homogeneous mass. Several components are affecting individual pixel brightness in images and can contribute to this effect:
 	 
 	\begin{description}
-		\item[illumination (spectral energy)] Very high illumination could lead to the scene not having intense shadows, which makes steps not as distinguishable (this depends on the geometry of the light source and angles the light shines on the stairs). Very low illumination makes color values harder to distinguish in many scenarios (low spectral intensity) and also has an effect on many sensors.
+		\item[Illumination (Spectral Energy):] Very high illumination could lead to the scene not having intense shadows, which makes steps not as distinguishable (this depends on the geometry of the light source and the angle at which the light shines on the stairs). Very low illumination makes color values harder to distinguish in many scenarios (low spectral intensity) and also has an effect on many sensors.
 		
-		\item[object surface properties] Object surfaces have an extreme impact on the ability to recognize shapes. A very smooth or homogeneous texture contributes to not being able to distinguish the step. It also affects if the light hitting the surface is rather \emph{absorbed, reflected or scattered}.	This in turn has an effect on the distinction of shadows thrown by the Object. 
-				\begin{figure}[h!]
-					\caption{Homogeneous staircase}	
+		\item[Object Surface Properties:] Object surfaces have an extreme impact on their recognizability. A very smooth or homogeneous texture can contribute to the step not being distinguishable. It can also influence whether the light that hits the surface is rather \emph{absorbed, reflected or scattered}. This, in turn, has an effect on the distinction of shadows thrown by the object.
+		
+				\begin{figure}[h!]	
 					\centering
-					\includegraphics[scale=0.5]{homogene_treppe.JPG} 
+					\includegraphics[scale=0.5]{homogene_treppe.JPG}
+					\caption{Homogeneous staircase}
 				\end{figure}
 				
-		\item[sensor properties] Different sensors have varying color sensitivity properties (CCD vs CMOS) and are also more or less affected by illumination.
-		\item[geometry of light source] This can contribute to the object not throwing many shadows on certain angles light direction. A very smooth distribution of light will boost surface properties causing the described effect.
-		\item[transparency of irradiated medium] Dust, Smoke etc. will influence the sensors.
+		\item[Sensor Properties:] Different sensors have varying color sensitivity properties (CCD vs CMOS) and are also more or less affected by illumination.
+		
+		\item[Geometry of the Light Source:] This can contribute to the object not throwing many shadows on certain angles light direction. A very smooth distribution of light will boost surface properties causing the described effect.
+		
+		\item[Transparency of the Irradiated Medium:] Dust, smoke etc. will influence the amount of light that hits the object's surface and also the amount of reflected light that finally arrives at the sensors.
 	\end{description}
 	
-	\twodo{When searching about photometric laws BRDF(Bi-directional Reflectance Distribution Function) is always named, anybody understanding it well enough to say something about the way it contributes here? }
+%TODO: When searching about photometric laws BRDF (Bi-directional Reflectance Distribution Function) is always named, anybody understanding it well enough to say something about the way it contributes here?
+% Sibel: Me not really. 
 		
 	\subsection{TV Images}
-	We know that 25 full frames (50 half frames) are shown per second in the PAL standard and that 1 full frame consists of 625 rows\footnote{see last slide of Lecture 3, Image Understanding and Image Formation}. Hence, we can compute the time it takes for one row to be \twodo{recorded/ shown (?)} like so:
+	We know that 25 full frames (50 half frames) are shown per second in the PAL standard and that 1 full frame consists of 625 rows\footnote{see last slide of Lecture 3, Image Understanding and Image Formation}. Hence, we can compute the time it takes for one row like so:
 	\begin{align*}
 		\frac{1 s}{25 \cdot 625} = 0.000064 s = 64\mu s
 	\end{align*}
@@ -60,8 +64,5 @@
 	
 	\begin{align*}
 	\mathit{offset} = 0.00013\overline{8} \frac{px}{\mu s} \cdot 18,432 \mu s = 2.56 px
-	\end{align*}
-	
-	\twodo{The first half of the computation was done using the number of rows in the full frame, while the second part is based on the visible frame. Is this ok?}
-	
+	\end{align*}	
 \end{document}
