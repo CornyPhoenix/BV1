@@ -13,7 +13,7 @@
 \newcommand{\twodo}[1]{\textcolor{red}{\textbf{todo:} #1}}
 
 \title{\textbf{Exercises for Image Processing 1}\\Problem Sheet 3}
-\author{Axel Brand\\6145101 \and Nour Elfaramawy\\6517858 \and Konstantin M\"ollers\\6313136 \and Sibel Toprak\\6712316}
+\author{Axel Brand\\6145101 \and Nourhan Elfaramawy\\6517858 \and Konstantin M\"ollers\\6313136 \and Sibel Toprak\\6712316}
 
 \begin{document}
 	\maketitle
@@ -51,7 +51,19 @@
 	
 	In the case of \textbf{Orthographic projection}. Then all lines which are parallel in the real world are also parallel in the projected world.
 	
+	\textbf{Alternative Answer}:
+	
+	Parallel lines in space project perspectively onto lines that on extension intersect at a single point in the image plane called vanishing point or point at infinity. The vanishing point of a line depends on the orientation of the line and not on the position of the line. The vanishing point of any given line in space is located at the point in the image where a parallel line through the center of projection intersects the image plane.
+	
+By inserting into a Cartesian scene a set of parallel lines that are not parallel to any of the three axes of the scene, a new distinct vanishing point is created. Therefore, it is possible to have an infinite-point perspective if the scene being viewed is not a Cartesian scene but instead consists of infinite pairs of parallel lines, where each pair is not parallel to any other pair.
+
+	
 	\subsection{Sphere Projection}
+	
+	Given a sphere in the scene, we can visualize the set of points which connect the optical center of the camera to the edges of the visible hemisphere of the sphere as being a geometrical cone with the same radius and the top angle lying on the center. This cone is sliced by the image plane and rendered 2- dimensional exactly how the sphere is represented on the resulting picture.
+So given a not null focal distance, a normal optical axis to the image plane and a sphere lying on a side of the image plane, the sphere will result in a circle in the image if its center point lies on the optical axis of the camera, thus the geometrical cone is then sliced by a plane parallel to its base, while in any other case the sphere will be an ellipse.
+
+
 	
 	Spheres are looking like ellipses in a 3D projection:
 	
