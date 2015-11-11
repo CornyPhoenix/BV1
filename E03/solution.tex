@@ -73,14 +73,15 @@
 	
 	\begin{figure*}
 		\centering
-		\includegraphics[width=\textwidth]{vanishing_point.png}
+		\includegraphics[width=\textwidth]{images/vanishing_point.png}
 		\caption{Perspective projections of parallel 3D straight lines in a scene onto an image plane. $f$ denotes the focal length.}
 		\label{fig:vanishing_point}
 	\end{figure*}
 	
-	\textcolor{gray}{\textbf{Remark:} It turned out that each of us interpreted this task differently. Because we were not sure which of our interpretations is the correct one, we decided to provide all of them here.}
+	% \textcolor{gray}{\textbf{Remark:} It turned out that each of us interpreted this task differently. Because we were not sure which of our interpretations is the correct one, we decided to provide all of them here.}
 	
-	\paragraph{Interpretation 1:} The general setting is shown in \Cref{fig:vanishing_point}: We have two straight blue lines in the scene that are parallel to each other called $L_1$ and $L_2$. We select one point along each of the two lines such that connecting the two of them yields a straight line segment, the green one, that is parallel to the image plane. We will refer to the point on $L_1$ as $p_1$ and the point on $L_2$ as $p_2$.
+	%\paragraph{Interpretation 1:}
+	The general setting is shown in \Cref{fig:vanishing_point}: We have two straight blue lines in the scene that are parallel to each other called $L_1$ and $L_2$. We select one point along each of the two lines such that connecting the two of them yields a straight line segment, the green one, that is parallel to the image plane. We will refer to the point on $L_1$ as $p_1$ and the point on $L_2$ as $p_2$.
 	
 	Furthermore, let $\Delta d$ be the length of this connecting line segment. Because of the parallelism between the two straight lines, $\Delta d$ is always constant even if the green line between $p_1$ and $p_2$ moves towards infinity along $z^{\prime}$.
 	
@@ -98,26 +99,49 @@
 
 	%In the case of \textbf{Orthographic projection}. Then all lines which are parallel in the real world are also parallel in the projected world.
 	
-	\paragraph{Interpretation 2:} Parallel lines in space project perspectively onto lines that on extension intersect at a single point in the image plane called vanishing point or point at infinity. The vanishing point of a line depends on the orientation of the line and not on the position of the line. The vanishing point of any given line in space is located at the point in the image where a parallel line through the center of projection intersects the image plane.
+	%\paragraph{Interpretation 2:}
+	Parallel lines in space project perspectively onto lines that on extension intersect at a single point in the image plane called vanishing point or point at infinity. The vanishing point of a line depends on the orientation of the line and not on the position of the line. The vanishing point of any given line in space is located at the point in the image where a parallel line through the center of projection intersects the image plane.
 	
 	By inserting into a Cartesian scene a set of parallel lines that are not parallel to any of the three axes of the scene, a new distinct vanishing point is created. Therefore, it is possible to have an infinite-point perspective if the scene being viewed is not a Cartesian scene but instead consists of infinite pairs of parallel lines, where each pair is not parallel to any other pair.
 	
 	% % % % %
-	\subtask{c}{What shapes have the perspective projections of spheres? Justify your answer.}
+	\subtask{c}{What shapes do the perspective projections of spheres have? Justify your answer.}
 	
-	Given a sphere in the scene, we can visualize the set of points which connect the optical center of the camera to the edges of the visible hemisphere of the sphere as being a geometrical cone with the same radius and the top angle lying on the center. This cone is sliced by the image plane and rendered 2- dimensional exactly how the sphere is represented on the resulting picture.
 	
-	So given a not null focal distance, a normal optical axis to the image plane and a sphere lying on a side of the image plane, the sphere will result in a circle in the image if its center point lies on the optical axis of the camera, thus the geometrical cone is then sliced by a plane parallel to its base, while in any other case the sphere will be an ellipse.
 
 
 	
 	Spheres are looking like ellipses in a 3D projection:
 	
-	\begin{figure}[h!]
+	\begin{figure}[h]
 		\centering
-		%\includegraphics[width=0.7\textwidth]{E03.png}
-		\caption{Sphere rendered with perspective projection in POV-Ray.}
+		\includegraphics[width=\columnwidth]{images/task_1c.png}
+		\caption{Scene rendered with POV-Ray.}
+		\label{fig:povray_scene}
 	\end{figure}
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=\columnwidth]{images/povray_camera.png}
+		\begin{verbatim}
+		camera
+		{
+		perspective angle 120
+		location  <0, 0.5, -3> // optical center
+		look_at   <0, 0, 5> // vanishing point /focal dist
+		}
+		\end{verbatim}
+		\caption{Scene rendered with POV-Ray and the code.}
+		\label{fig:povray_camera}
+	\end{figure}
+	
+	
+	
+	\Cref{fig:povray_scene} shows a scene as can be seen through a perspective camera with five spheres in a row. 
+	
+	Given a sphere in the scene, we can visualize the set of points which connect the optical center of the camera to the edges of the visible hemisphere of the sphere as being a geometrical cone with the same radius and the top angle lying on the center. This cone is sliced by the image plane and rendered 2- dimensional exactly how the sphere is represented on the resulting picture.
+	
+	So given a not null focal distance, a normal optical axis to the image plane and a sphere lying on a side of the image plane, the sphere will result in a circle in the image if its center point lies on the optical axis of the camera, thus the geometrical cone is then sliced by a plane parallel to its base, while in any other case the sphere will be an ellipse.
 	
 	
 \end{document}
