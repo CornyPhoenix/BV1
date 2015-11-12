@@ -73,7 +73,7 @@
 	
 	\begin{figure*}
 		\centering
-		\includegraphics[width=\textwidth]{images/vanishing_point.png}
+		\includegraphics[width=0.8\textwidth]{images/vanishing_point.png}
 		\caption{Perspective projections of parallel 3D straight lines in a scene onto an image plane. $f$ denotes the focal length.}
 		\label{fig:vanishing_point}
 	\end{figure*}
@@ -100,18 +100,19 @@
 	%In the case of \textbf{Orthographic projection}. Then all lines which are parallel in the real world are also parallel in the projected world.
 	
 	%\paragraph{Interpretation 2:}
-	Parallel lines in space project perspectively onto lines that on extension intersect at a single point in the image plane called vanishing point or point at infinity. The vanishing point of a line depends on the orientation of the line and not on the position of the line. The vanishing point of any given line in space is located at the point in the image where a parallel line through the center of projection intersects the image plane.
+	%Parallel lines in space project perspectively onto lines that on extension intersect at a single point in the image plane called vanishing point or point at infinity. The vanishing point of a line depends on the orientation of the line and not on the position of the line. The vanishing point of any given line in space is located at the point in the image where a parallel line through the center of projection intersects the image plane.
 	
-	By inserting into a Cartesian scene a set of parallel lines that are not parallel to any of the three axes of the scene, a new distinct vanishing point is created. Therefore, it is possible to have an infinite-point perspective if the scene being viewed is not a Cartesian scene but instead consists of infinite pairs of parallel lines, where each pair is not parallel to any other pair.
+	%By inserting into a Cartesian scene a set of parallel lines that are not parallel to any of the three axes of the scene, a new distinct vanishing point is created. Therefore, it is possible to have an infinite-point perspective if the scene being viewed is not a Cartesian scene but instead consists of infinite pairs of parallel lines, where each pair is not parallel to any other pair.
 	
 	% % % % %
 	\subtask{c}{What shapes do the perspective projections of spheres have? Justify your answer.}
 	
+	\Cref{fig:povray_scene} shows a five spheres forming a row. The image is a result of perspective projection. The shape of the spheres is becoming ellipsoid-like, the further they are away from the optical axis.
 	
-
-
+	One can think of the 
+	Given a sphere in the scene, we can visualize the set of points which connect the optical center of the camera to the edges of the visible hemisphere of the sphere as being a geometrical cone with the same radius and the top angle lying on the center. This cone is sliced by the image plane and rendered 2- dimensional exactly how the sphere is represented on the resulting picture.
 	
-	Spheres are looking like ellipses in a 3D projection:
+	%So given a not null focal distance, a normal optical axis to the image plane and a sphere lying on a side of the image plane, the sphere will result in a circle in the image if its center point lies on the optical axis of the camera, thus the geometrical cone is then sliced by a plane parallel to its base, while in any other case the sphere will be an ellipse.
 	
 	\begin{figure}[h]
 		\centering
@@ -122,13 +123,18 @@
 	
 	\begin{figure}[h]
 		\centering
-		\includegraphics[width=\columnwidth]{images/povray_camera.png}
+		\includegraphics[width=0.9\columnwidth]{images/povray_camera.png}
 		\begin{verbatim}
 		camera
 		{
-		perspective angle 120
-		location  <0, 0.5, -3> // optical center
-		look_at   <0, 0, 5> // vanishing point /focal dist
+		    perspective angle 120
+		    
+		    // optical center
+		    location  <0, 0.5, -3>
+		    
+		    // position of vanishing point
+		    // on image plane
+		    look_at   <0, 0, 5>
 		}
 		\end{verbatim}
 		\caption{Scene rendered with POV-Ray and the code.}
@@ -137,11 +143,9 @@
 	
 	
 	
-	\Cref{fig:povray_scene} shows a scene as can be seen through a perspective camera with five spheres in a row. 
+	 
 	
-	Given a sphere in the scene, we can visualize the set of points which connect the optical center of the camera to the edges of the visible hemisphere of the sphere as being a geometrical cone with the same radius and the top angle lying on the center. This cone is sliced by the image plane and rendered 2- dimensional exactly how the sphere is represented on the resulting picture.
 	
-	So given a not null focal distance, a normal optical axis to the image plane and a sphere lying on a side of the image plane, the sphere will result in a circle in the image if its center point lies on the optical axis of the camera, thus the geometrical cone is then sliced by a plane parallel to its base, while in any other case the sphere will be an ellipse.
 	
 	
 \end{document}

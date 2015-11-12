@@ -1,129 +1,75 @@
 # -*- coding: utf-8 -*-
-"""
-*******************************************************************************
-Module:    Bildverarbeitung 1
-
-Exercise:  03 Perspective Projections
-
-Authors:   Toprak,     Sibel      (6712316)
-           Elfaramawy, Nourhan    (6517858)
-           Brand,      Axel       (6145101)
-*******************************************************************************
-"""
-
-from __future__ import division
-import colorsys
+# *****************************************************************************
+#Module:    Bildverarbeitung 1
+#
+#Exercise:  03 Perspective Projections
+#
+#Authors:   Toprak,     Sibel      (6712316)
+#           Elfaramawy, Nourhan    (6517858)
+#           Brand,      Axel       (6145101)
+# *****************************************************************************
 
 import numpy as np
 import math
 
-from scipy import misc
-import matplotlib.pyplot as plt
+'''
+PART 1:
+Describing the given scene point with respect to the camera coordinate system:
+'''
+#Step 1: Displacement
+def displace(x, y, z, vector):
+    return np.matrix([[1, 0, 0, -x], 
+                      [0, 1, 0, -y], \
+                      [0, 0, 1, -z], \
+                      [0, 0, 0, 1]]) \
+                      * vector
 
-def sincos(angle):
-    rad = math.radians(angle)
-    return math.sin(rad), math.cos(rad)
+#Step 2: Rotation around x
+def nick(angle, vector):
+    radian = math.radians(angle)
+    sin, cos = math.sin(radian), math.cos(radian) 
+    
+    return np.matrix([[1, 0, 0, 0],
+                      [0, cos, sin, 0], \
+                      [0, -sin, cos, 0], \
+                      [0, 0, 0, 1]]) \
+                      * vector                    
 
-def buildNickMatrix(angle):
-    sin, cos = sincos(angle)
-    return [
-        [1,    0,   0],
-        [0,  cos, sin],
-        [0, -sin, cos]
-    ]
-    
-def buildPanMatrix(angle):
-    sin, cos = sincos(angle)
-    return [
-        [cos, 0, -sin],
-        [  0, 1,    0],
-        [sin, 0,  cos]
-    ]
+#Step 3: Rotation around y
+def pan(angle, vector):
+    radian = math.radians(angle)
+    sin, cos = math.sin(radian), math.cos(radian) 
 
-class Vector:
-    
-    def __init__(self, ax, ay, az):
-        self.ary = [ax, ay, az]
-        
-    def __str__(self):
-        return "X = %.2fcm; Y = %.2fcm; Z = %.2fcm" % (self.x(), self.y(), self.z())
-    
-    def x(self):
-        """
-        Returns the X component of this vector.
-        """
-        return self.ary[0]
-        
-    def y(self):
-        """
-        Returns the Y component of this vector.
-        """
-        return self.ary[1]
-        
-    def z(self):
-        """
-        Returns the Z component of this vector.
-        """
-        return self.ary[2]
-        
-    def project(self, focal_length):
-        """
-        Projects this vector on a plane with a given focal length.
-        """
-        self.ary = [
-            self.x() * focal_length / self.z(),
-            self.y() * focal_length / self.z(),
-            focal_length
-        ]
-        
-        return self
-    
-    def translate(self, vec):
-        """
-        Translates this vector by another.
-        """
-        self.ary = np.add(self.ary, vec.ary)
-        return self
-        
-    def displace(self, vec):
-        """
-        Displaces a vector by another vector.
-        """
-        self.ary = np.subtract(self.ary, vec.ary)
-        return self
-        
-    def nick(self, angle):
-        """
-        Nicks this vector.
-        """
-        matrix = buildNickMatrix(angle)
-        self.mul(matrix)
-        return self
-        
-    def pan(self, angle):
-        """
-        Pans this vector.
-        """
-        matrix = buildPanMatrix(angle)
-        self.mul(matrix)
-        return self
-        
-    def mul(self, matrix):
-        """
-        Multiplies the vector with a matrix and sets the
-        resulting coordinates on this vector.
-        """
-        self.ary = np.dot(matrix, self.ary)
-        
+    return np.matrix([[cos, 0, -sin, 0],
+                     [0, 1, 0, 0], \
+                     [sin, 0, cos, 0], \
+                     [0, 0, 0, 1]]) \
+                     * vector
 
-# All lengths are given in [cm]!
-if __name__ == '__main__':    
-    
-    # Camera world position
-    camera = Vector(0, 300, 0)
+'''
+PART 2:
+Performing the perspective projection:
+'''
+#Step 4:
+def project(focal_length, vector):
+    z = vector.item(2)
+    factor = focal_length / z
+    return np.matrix([[factor, 0, 0, 0], 
+                      [0, factor, 0, 0], \
+                      [0, 0, 0, focal_length], \
+                      [0, 0, 0, 1]]) \
+                      * vector
 
-    # Table corner world positon
-    corner = Vector(100, 75, 150)
-    
-    # X = -0.44cm; Y = 0.50cm; Z = 3.50cm
-    print corner.displace(camera).pan(45).nick(60).project(3.5)
+# *****************************************************************************
+
+'''
+Lengths in centimeters, angles in degrees!
+'''
+scene_point = np.matrix([[100], [75], [150], [1]])
+'''
+Negative nick angle necessary in left-handed coordinate system in order to 
+lower the camera towards the room center!
+'''
+result = project(3.5, nick(-60, pan(45, displace(0, 300, 0, scene_point))))
+print result 
+# [1.16226867, 8.73108725, 3.5, 1]
