@@ -54,9 +54,7 @@
 	
 	\subsection{Sphere Projection}
 	
-	Given a sphere in the scene, we can visualize the set of points which connect the optical center of the camera to the edges of the visible hemisphere of the sphere as being a geometrical cone with the same radius and the top angle lying on the center. This cone is sliced by the image plane and rendered 2-dimensional exactly how the sphere is represented on the resulting picture.
-	
-	So given a not null focal distance, a normal optical axis to the image plane and a sphere lying on a side of the image plane, the sphere will result in a circle in the image if its center point lies on the optical axis of the camera, thus the geometrical cone is then sliced by a plane parallel to its base, while in any other case the sphere will be an ellipse. You can see the effect in the following image.
+	Imagining some points lying on the face of a circle in 3D space. If we apply a perspective projection on these, the points are shifted on the X- and Y-axis depending on their Z-value and the focal length. Because a sphere can be imagined as a stack of many circles with different Z-values, we can imagine that these circles are slightly shifting their positions because of their changing Z-values. This concludes in the form an ellipse, as you can see in the following figure.
 	
 	\begin{figure}[h!]
 		\centering
