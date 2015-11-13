@@ -21,4 +21,29 @@
 \begin{document}
 	\maketitle
 	
+	\section{Theoretical Problems}
+	
+	\subsection{Histogram and Noise}
+	Histograms used to better understand how frequently or infrequently certain values occur in a given set of data. A greyvalue histogram of an image provides the frequency of greyvalues in the image. The histogram of an image with N quantization levels is represented by a 1D array with N elements. A greyvalue histogram describes discrete values.
+	
+	For an image showing white parsels on a black conveyor belt, I would expect clearly separated bimodality. In a histogram going from 0 (lightest) to 255 (darkest), one peak towards the 0 for the white parcels and the other one to the far side towards 255 for the black conveyor belt.
+	
+	If the camera is affected by sensor noise, this might change the histogram in that the two peaks cannot be clearly segregated, a valley occurs. The histogram appears to be somewhat blurred. It is difficult to determine a threshold by which we can decide whether the object in a scene is the parcel or the conveyor belt.
+	
+	\subsection{Projections}
+	
+	Create a projection of greyvalues in an image using column profile to get a column vector of all (normalized) row sums. The sum will be lower for rows showing parts of characters, while the lines going through will result in higher sums. 
+	
+	\subsection{Filters}
+	
+	
+	
+	\section{Practical Problems}
+	
+	\subsection{Convolution}
+	
+	\subsection{Greyvalue Normalization}
+	
+	\subsection{Fourier-Transform}
+	
 \end{document}
