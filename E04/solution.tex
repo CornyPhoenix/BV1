@@ -38,6 +38,8 @@
 	
 	\subsection{Convolution}
 	
+	Convolution describes filtering in the spatial domain. The Convolution Matrix  filter uses a  first matrix which is the Image to be treated. The image is a bi-dimensional collection of pixels in rectangular coordinates. The used kernel depends on task or the desired effect. We take in consideration a 3x3 Mask. The  filter studies successively every pixel of the image. For each of them, which we will call the  initial pixel, it multiplies the value of this pixel and values of the 8 surrounding pixels by the kernel corresponding value. Then it sums the results, and the initial pixel is set to this  final result value. When making the convolution of an image with itself, it means that the convolution matrix is the size of the image, giving the weight of every pixel the value 1, so the value of every single pixel depends on the values of the pixels of the entire image, which will result in a more blurred and fuzzy optical effect from the original image.
+	
 	\section{Practical Problems}
 	
 	\subsection{Greyvalue Normalization}
