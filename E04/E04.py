@@ -61,6 +61,29 @@ def normalize_gray_values(image):
 
     return output
 
+    
+def fourier_transform(image):
+    """
+    Applies the customized 2D Fourier transformation.
+
+    :param image: The image to transform.
+    :return: The resulting complex matrix.
+    """
+    # Get image dimensions
+    width, height = np.shape(image)
+    
+    output = np.fft.fft2(image)
+    
+    rows = np.zeros((height, width), 'complex')
+    for row in range(height):
+        rows[row] = np.fft.fft(image[row:row + 1, :]).reshape(width)
+        
+    for column in range(width):
+        fft2 = np.fft.fft(rows[:, column:column+1]).reshape(height)
+        output[:, column] = fft2
+            
+    return output
+
 
 def plot_gray(image):
     """
@@ -78,4 +101,8 @@ if __name__ == '__main__':
 
     normalized_lena = normalize_gray_values(lena)
     plot_gray(normalized_lena)
+
+    fft2 = fourier_transform(lena)
+    rev_image = np.fft.ifft2(fft2).real
+    plot_gray(rev_image)
 
