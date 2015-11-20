@@ -24,15 +24,20 @@
 	\section{Theoretical Problems}
 	
 	\subsection{Histogram and Noise}
-	Histograms used to better understand how frequently or infrequently certain values occur in a given set of data. A greyvalue histogram of an image provides the frequency of greyvalues in the image. The histogram of an image with N quantization levels is represented by a 1D array with N elements. A greyvalue histogram describes discrete values.
 	
-	For an image showing white parsels on a black conveyor belt, I would expect clearly separated bimodality. In a histogram going from 0 (lightest) to 255 (darkest), one peak towards the 0 for the white parcels and the other one to the far side towards 255 for the black conveyor belt.
+	A histogram is a graphical representation that visualizes how many times certain values occur in some given data. The data could be for example an image, in which case the corresponding color histogram represents the color distribution as it would plot the number of pixels for each color value. Conventionally, the horizontal axis represents the values, while the vertical axis represents their number of occurrence.
 	
-	If the camera is affected by sensor noise, this might change the histogram in that the two peaks cannot be clearly segregated, a valley occurs. The histogram appears to be somewhat blurred. It is difficult to determine a threshold by which we can decide whether the object in a scene is the parcel or the conveyor belt.
+	For an image showing white parcels on a black conveyor belt, the kind of histogram to expect is a gray-value histogram, which provides the discrete gray-value distribution within the image. More particularly, the distribution of the gray-values would be a bimodal one with two more or less clearly distinguishable peaks: For gray-values ranging from 0 (lightest) to 255 (darkest), there would be one peak within a range around 0 for the white parcels and another one within a range around 255 for the black conveyor belt.
+	
+	If the camera is affected by sensor noise, the histogram might change in that the peaks appear to be shifted or the strict bi-modality is lost: The gray-values are distributed more evenly such that the peaks cannot be clearly distinguished anymore. It is difficult to determine a threshold by which we can decide with high accuracy whether an area in the image corresponds to a part of the parcel or of the conveyor belt.
 	
 	\subsection{Projections}
+		
+	To separate the text in the image into lines, one could project the gray-values in an image in ``column profile''. This yields a column vector of row sums. The row sum will be way higher for rows showing parts of characters compared to the sum for rows in the image that are in-between text lines. By using an appropriate value as threshold, we can detect the text lines in the image.
 	
-	Create a projection of greyvalues in an image using column profile to get a column vector of all (normalized) row sums. The sum will be lower for rows showing parts of characters, while the lines going through will result in higher sums. 
+	The extracted image strips showing a text line can then be processed further to separate the characters. To that end, a gray-value projection is performed on each image strip, but this time in ``row profile''. Using the resulting row vector of column sums, we can distinguish between columns that are involved in the rendering of the characters and those that show white spaces: The column sum for the former is way larger. Based on that, the characters can be extracted from these image strips using an appropriate threshold value.
+	
+	
 	
 	\subsection{Filters}
 	
@@ -43,6 +48,8 @@
 	\section{Practical Problems}
 	
 	\subsection{Greyvalue Normalization}
+	
+	See \texttt{task\_2a.py}.
 	
 	\subsection{Fourier-Transform}
 	
