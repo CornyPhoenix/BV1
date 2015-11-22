@@ -13,15 +13,6 @@ Authors:
 Dobert, Tim         (6427948)
 Möllers, Konstantin (6313136)
 
-
-Aufgabe 1a)
-    - Ein Histogramm representiert, wie viele Pixel einen bestimmten Grauwert haben
-    - Das Histogramm hätte zwei Spitzen, eine für das Fließband, die andere für die Pakete
-    - Wenn das Rauschen Gaussverteilt ist, sollte sich das Histogramm eines normalen Bildes nicht großartig ändern.
-      Für jeden Pixel der dunkler wird, wird ein anderer Heller.
-    - Außnahme ist ein komplett einfarbiges Bild
-
-
 """
 
 from __future__ import division
