@@ -9,10 +9,11 @@
 \usepackage{titlesec}
 \usepackage{hyperref}
 \usepackage{cleveref}
+\usepackage{tabularx}
 
 \titleformat{\subsection}[hang]{\large\bfseries}{\alph{subsection})\quad}{0pt}{}
 
-\newcommand{\twodo}[1]{\textcolor{red}{\textbf{todo:} #1}}
+\newcommand{\twodo}[1]{\vspace{11pt}\textcolor{red}{\textbf{todo:} #1}}
 \newcommand{\subtask}[2]{\paragraph{#1)} \textit{#2} \newline}
 
 \title{\textbf{Exercises for Image Processing 1}\\Problem Sheet 4}
@@ -37,20 +38,43 @@
 	
 	The extracted image strips showing a text line can then be processed further to separate the characters. To that end, a gray-value projection is performed on each image strip, but this time in ``row profile''. Using the resulting row vector of column sums, we can distinguish between columns that are involved in the rendering of the characters and those that show white spaces: The column sum for the former is way larger. Based on that, the characters can be extracted from these image strips using an appropriate threshold value.
 	
-	
-	
 	\subsection{Filters}
+	
+	See \\
+	\textbf{Image Processing, Analysis, and Machine Vision} \\
+	by \\
+	Milan Sonka, Vaclav Hlavac, Roger Boyle
 	
 	\subsection{Convolution}
 	
-	Convolution describes filtering in the spatial domain. The Convolution Matrix  filter uses a  first matrix which is the Image to be treated. The image is a bi-dimensional collection of pixels in rectangular coordinates. The used kernel depends on task or the desired effect. We take in consideration a 3x3 Mask. The  filter studies successively every pixel of the image. For each of them, which we will call the  initial pixel, it multiplies the value of this pixel and values of the 8 surrounding pixels by the kernel corresponding value. Then it sums the results, and the initial pixel is set to this  final result value. When making the convolution of an image with itself, it means that the convolution matrix is the size of the image, giving the weight of every pixel the value 1, so the value of every single pixel depends on the values of the pixels of the entire image, which will result in a more blurred and fuzzy optical effect from the original image.
+	Convolution describes filtering in the spatial domain. The Convolution Matrix  filter uses a  first matrix which is the Image to be treated. The image is a bi-dimensional collection of pixels in rectangular coordinates. The used kernel depends on task or the desired effect. We take in consideration a 3x3 Mask. The  filter studies successively every pixel of the image. For each of them, which we will call the  initial pixel, it multiplies the value of this pixel and values of the 8 surrounding pixels by the kernel corresponding value. Then it sums the results, and the initial pixel is set to this  final result value.
+	
+	When making the convolution of an image with itself, it means that the convolution matrix is the size of the image, giving the weight of every pixel the value 1, so the value of every single pixel depends on the values of the pixels of the entire image, which will result in a more blurred and fuzzy optical effect from the original image.
+	
+	\twodo{(Sibel @Nour) Thanks for doing this part.:) Could you maybe split the second paragraph in multiple sentences? That would be really great. I've also computed the result of the described convolution. Could you maybe relate what you expected the result to be with \Cref{fig:task_1d}?}
+	
+	\begin{figure*}
+		\centering
+		\begin{tabular}{c c}
+			\includegraphics[width=\columnwidth]{figures/B1.png}
+			&
+			\includegraphics[width=\columnwidth]{figures/B2.png}\\
+			B1 & B2
+		\end{tabular}
+		\caption{\textit{Left:} Image B1 showing a bright square before a darker background. \textit{Right:} Result of convolving B1 with itself. B2 was obtained by performing multiplying the Fourier transform of the image with itself in the frequency domain and inverting the result back to the spatial domain.}
+		\label{fig:task_1d}
+	\end{figure*}
 	
 	\section{Practical Problems}
 	
 	\subsection{Greyvalue Normalization}
 	
-	See \texttt{task\_2a.py}.
+	See file \texttt{task\_2a.py}.
+	
+	\twodo{(Sibel) Apparently, this is not correct. I will go and talk to Benjamin to make sure whether I understood the task correctly.}
 	
 	\subsection{Fourier-Transform}
+	
+	See file \texttt{task\_2b.py}.
 	
 \end{document}

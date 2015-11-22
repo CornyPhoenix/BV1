@@ -1,13 +1,12 @@
-
 # -*- coding: utf-8 -*-
 # *****************************************************************************
 #Module:    Bildverarbeitung 1
 #
 #Exercise:  04 Histograms, Filters, Convolution and Fourier-Transform
 #
-#Authors:   Toprak,     Sibel      (6712316)
+#Authors:   Brand,      Axel       (6145101)
 #           Elfaramawy, Nourhan    (6517858)
-#           Brand,      Axel       (6145101)
+#           Toprak,     Sibel      (6712316)
 # *****************************************************************************
 
 # *****
