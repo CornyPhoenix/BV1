@@ -17,10 +17,10 @@ Möllers, Konstantin (6313136)
 Aufgabe 1a)
     - Ein Histogramm representiert, wie viele Pixel einen bestimmten Grauwert haben
     - Das Histogramm hätte zwei Spitzen, eine für das Fließband, die andere für die Pakete
-    - Wenn das Rauschen Gaussverteilt ist, sollte sich das Histogramm eines normalen Bildes nicht großartig ändern. 
+    - Wenn das Rauschen Gaussverteilt ist, sollte sich das Histogramm eines normalen Bildes nicht großartig ändern.
       Für jeden Pixel der dunkler wird, wird ein anderer Heller.
     - Außnahme ist ein komplett einfarbiges Bild
-    
+
 
 """
 
@@ -38,10 +38,10 @@ def build_histogramm(img):
         for j in range(len(img[0])):
             histo[img[i][j]] += 1
     return histo
-    
+
 def histogram_to_image(histo):
     height = int(max(histo)/4) + 10
-    bar_width = 5   
+    bar_width = 5
     width = 255 * bar_width
     #Building the image
     img = []
@@ -51,7 +51,7 @@ def histogram_to_image(histo):
         for y in range(int(histo[int(x/bar_width)]/4)):
             img[height - y -1][x] = 255
     return img
-    
+
 def normalize_gray_values(image):
     """
     Normalizes gray values of an image.
@@ -126,10 +126,10 @@ def plot_gray(image):
 if __name__ == '__main__':
     lena = misc.lena()
     plot_gray(lena)
-    
+
     normalized_lena = normalize_gray_values(lena)
     plot_gray(normalized_lena)
-    
+
     #histograms:
     plot_gray(histogram_to_image(build_histogramm(lena)))
     #plot_gray(histogram_to_image(build_histogramm(normalized_lena)))   #weird results
