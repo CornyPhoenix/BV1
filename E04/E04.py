@@ -90,16 +90,20 @@ def fourier_transform(image):
     """
     # Get image dimensions
     width, height = np.shape(image)
-    
+
+    # For comparison: Generate a fft2 image with builtin function
     output = np.fft.fft2(image)
-    
+
+    # Generate a matrix for complex numbers with same dimensions as the input image
     rows = np.zeros((height, width), 'complex')
+    # Apply 1D DFT on each row
     for row in range(height):
         rows[row] = np.fft.fft(image[row:row + 1, :]).reshape(width)
-        
+
+    # Apply 1D DFT on each column afterwards
     for column in range(width):
-        fft2 = np.fft.fft(rows[:, column:column+1]).reshape(height)
-        output[:, column] = fft2
+        fft2 = np.fft.fft(rows[:, column:column+1])
+        output[:, column] = fft2[:, 0]
             
     return output
 
@@ -116,14 +120,14 @@ def plot_gray(image):
 
 if __name__ == '__main__':
     lena = misc.lena()
-    plot_gray(lena)
+    # plot_gray(lena)
 
-    normalized_lena = normalize_gray_values(lena)
-    plot_gray(normalized_lena)
+    # normalized_lena = normalize_gray_values(lena)
+    # plot_gray(normalized_lena)
 
     #histograms:
-    plot_gray(histogram_to_image(build_histogramm(lena)))
-    #plot_gray(histogram_to_image(build_histogramm(normalized_lena)))   #weird results
+    # plot_gray(histogram_to_image(build_histogramm(lena)))
+    # #plot_gray(histogram_to_image(build_histogramm(normalized_lena)))   #weird results
 
 
     fft2 = fourier_transform(lena)
