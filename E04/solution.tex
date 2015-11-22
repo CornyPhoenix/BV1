@@ -75,6 +75,44 @@
 	
 	\subsection{Fourier-Transform}
 	
-	See file \texttt{task\_2b.py}.
+	The 2D Fourier transform is defined as follows:
+	\begin{align*}
+	G_{uv} = \frac{1}{M \cdot N} \cdot
+	\sum_{m=0}^{M-1} \sum_{n=0}^{N-1} g_{mn} \cdot
+	e^{-2 \cdot  \pi \cdot j (\frac{m \cdot u}{M} + \frac{n \cdot v}{N})}
+	\end{align*}
+	
+	It can be shown that this can be broken down into a series of 1D Fourier transforms:
+	\begin{align*}
+	G_{uv}
+	&= \frac{1}{M} \cdot \frac{1}{N} \cdot
+	\sum_{m=0}^{M-1} \sum_{n=0}^{N-1} g_{mn} \cdot
+	e^{-2 \cdot  \pi \cdot j \frac{m \cdot u}{M}} \cdot
+	e^{-2 \cdot  \pi \cdot j \frac{n \cdot v}{N}} \\
+	&= \frac{1}{N} \cdot \sum_{n=0}^{N-1}
+	e^{-2 \cdot  \pi \cdot j \frac{n \cdot v}{N}} \cdot
+	\frac{1}{M} \cdot \sum_{m=0}^{M-1}
+	g_{mn} \cdot
+	e^{-2 \cdot  \pi \cdot j \frac{m \cdot u}{M}}
+	\end{align*}
+	
+	This shows that, in order to compute a 2D DFT, one can perform 1D FFT on each individual row of the 2D input matrix and then to each of its columns. Of course, this could also be done vice versa: One could first perform it on the columns and then on the rows as well.
+	
+	Similarly, the 2D inverse Fourier transform can be broken down into a series of 1D inverse Fourier transforms:
+	\begin{align*}
+	g_{mn}
+	&= \sum_{u=0}^{M-1} \sum_{v=0}^{N-1} G_{uv} \cdot
+	e^{2 \cdot  \pi \cdot j (\frac{m \cdot u}{M} + \frac{n \cdot v}{N})} \\
+	&= \sum_{u=0}^{M-1} \sum_{v=0}^{N-1} G_{uv} \cdot
+	e^{2 \cdot  \pi \cdot j \frac{m \cdot u}{M}} \cdot
+	e^{2 \cdot  \pi \cdot j \frac{n \cdot v}{N}} \\
+	&= \sum_{v=0}^{N-1} e^{2 \cdot \pi \cdot j \frac{n \cdot v}{N}} \cdot
+	\sum_{u=0}^{M-1} G_{uv} \cdot
+	e^{2 \cdot  \pi \cdot j \frac{m \cdot u}{M}}
+	\end{align*}
+	
+	The same as above holds here as well.
+	
+	See the file \texttt{task\_2b.py} for the implementation.
 	
 \end{document}
