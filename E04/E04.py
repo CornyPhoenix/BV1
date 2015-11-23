@@ -125,7 +125,7 @@ def rev_fourier_transform(frequency):
     :param frequency: The image values coming from the frequency domain.
     :return: The image values in the spatial domain.
     """
-    return apply_func_2d(frequency, np.fft.ifft)
+    return apply_func_2d(frequency, np.fft.ifft).real
 
 
 def plot_gray(image):
@@ -153,4 +153,4 @@ if __name__ == '__main__':
     fft2 = fourier_transform(lena)
     # rev_image = np.fft.ifft2(fft2).real
     rev_image = rev_fourier_transform(fft2)
-    plot_gray(rev_image.real)
+    plot_gray(rev_image)
