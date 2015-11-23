@@ -80,32 +80,52 @@ def normalize_gray_values(image):
 
     return output
 
-    
-def fourier_transform(image):
+
+def apply_func_2d(image, func):
     """
-    Applies the customized 2D Fourier transformation.
+    Applies a one dimensional function "func" on a two dimensional image.
 
     :param image: The image to transform.
-    :return: The resulting complex matrix.
+    :param func: The function to apply.
+    :return: The result from applying the function in two dimensions.
     """
     # Get image dimensions
     width, height = np.shape(image)
 
-    # For comparison: Generate a fft2 image with builtin function
-    output = np.fft.fft2(image)
-
-    # Generate a matrix for complex numbers with same dimensions as the input image
+    # Generate a matrix for complex numbers with same dimensions as
+    # the input image and apply the function on each row.
     rows = np.zeros((height, width), 'complex')
-    # Apply 1D DFT on each row
-    for row in range(height):
-        rows[row] = np.fft.fft(image[row:row + 1, :]).reshape(width)
+    for y in range(height):
+        row = image[y:y + 1, :]
+        rows[y, :] = func(row)
 
-    # Apply 1D DFT on each column afterwards
-    for column in range(width):
-        fft2 = np.fft.fft(rows[:, column:column+1])
-        output[:, column] = fft2[:, 0]
-            
-    return output
+    # Afterwards, apply the function on each column.
+    cols = np.zeros((height, width), 'complex')
+    for x in range(width):
+        col = rows[:, x:x + 1].T
+        cols[:, x] = func(col).T[:, 0]
+
+    return cols
+
+
+def fourier_transform(spatial):
+    """
+    Applies the 1D DFT as 2D function.
+
+    :param spatial: The image values coming from the spatial domain.
+    :return: The image values in the frequency domain.
+    """
+    return apply_func_2d(spatial, np.fft.fft)
+
+
+def rev_fourier_transform(frequency):
+    """
+    Applies the 1D inverse DFT as 2D function.
+
+    :param frequency: The image values coming from the frequency domain.
+    :return: The image values in the spatial domain.
+    """
+    return apply_func_2d(frequency, np.fft.ifft)
 
 
 def plot_gray(image):
@@ -131,5 +151,6 @@ if __name__ == '__main__':
 
 
     fft2 = fourier_transform(lena)
-    rev_image = np.fft.ifft2(fft2).real
-    plot_gray(rev_image)
+    # rev_image = np.fft.ifft2(fft2).real
+    rev_image = rev_fourier_transform(fft2)
+    plot_gray(rev_image.real)
