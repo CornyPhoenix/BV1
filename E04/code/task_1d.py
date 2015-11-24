@@ -13,17 +13,10 @@
 # CONVOLUTION
 # *****
 
-import numpy
 from scipy import misc
-import matplotlib.pyplot as plot
-
+from scipy import signal
 from numpy.fft import fft2, ifft2
 
 B1 = misc.imread('conveyor_belt.png', flatten=True)
 B2 = fft2(B1)**2
 misc.imsave('convolution_result.png', ifft2(B2).real)
-
-#from scipy import signal
-#B1 = misc.imread('conveyor_belt.png', flatten=True)
-#B2 = signal.convolve2d(B1, B1, boundary='fill', mode='full')
-#misc.imsave('convolution_result.png', B2)

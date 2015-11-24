@@ -40,10 +40,9 @@
 	
 	\subsection{Filters}
 	
-	See \\
-	\textbf{Image Processing, Analysis, and Machine Vision} \\
-	by \\
-	Milan Sonka, Vaclav Hlavac, Roger Boyle
+	\twodo{}
+	% See \textbf{Image Processing, Analysis, and Machine Vision} by Milan Sonka, Vaclav Hlavac, Roger Boyle
+	
 	
 	\subsection{Convolution}
 	
@@ -51,27 +50,37 @@
 	
 	When making the convolution of an image with itself, it means that the convolution matrix is the size of the image, giving the weight of every pixel the value 1, so the value of every single pixel depends on the values of the pixels of the entire image, which will result in a more blurred and fuzzy optical effect from the original image.
 	
-	\twodo{(Sibel @Nour) Thanks for doing this part.:) Could you maybe split the second paragraph in multiple sentences? That would be really great. I've also computed the result of the described convolution. Could you maybe relate what you expected the result to be with \Cref{fig:task_1d}?}
-	
-	\begin{figure*}
+	\begin{figure*} [t]
 		\centering
 		\begin{tabular}{c c}
-			\includegraphics[width=\columnwidth]{figures/B1.png}
+			\includegraphics[width=0.8\columnwidth]{figures/B1.png}
 			&
-			\includegraphics[width=\columnwidth]{figures/B2.png}\\
-			B1 & B2
+			\includegraphics[width=0.8\columnwidth]{figures/B2.png}\\
+			B1 & B2\\
+			& \\
+			\includegraphics[width=0.8\columnwidth]{figures/B1_ext.png}
+			&
+			\includegraphics[width=0.8\columnwidth]{figures/B2_ext.png}\\
+			B1 & B2\\
+			\multicolumn{2}{c}{(quadrupled)}
 		\end{tabular}
-		\caption{\textit{Left:} Image B1 showing a bright square before a darker background. \textit{Right:} Result of convolving B1 with itself. B2 was obtained by performing multiplying the Fourier transform of the image with itself in the frequency domain and inverting the result back to the spatial domain.}
+		\caption{\textit{Above Left:} Image B1 showing a bright square before a darker background. \textit{Above Right:} Result of convolving B1 with itself. B2 was obtained by performing multiplying the Fourier transform of the image with itself in the frequency domain and inverting the result back to the spatial domain. See file \texttt{task\_1d.py} for the code. \textit{Below Left:} Image resulting from quadrupling B1. \textit{Below Right:} Corresponding convolution result.}
 		\label{fig:task_1d}
 	\end{figure*}
+	
+	\vspace{12pt}
+	\textit{Alternative Explanation:}
+	We know what a one-dimensional convolution of a box signal with itself looks like: One box signal is translated in time, such that it appears to be moving over the other. The result of the convolution is basically the changing size of the overlapping area between both signals. In this case, the result is a triangle pulse: While one square is sliding over the other, the overlapping area first increases until both squares overlap completely, after which it decreases again until it becomes zero. A nice animation of this can be found \href{https://en.wikipedia.org/wiki/Convolution#/media/File:Convolution_of_box_signal_with_itself2.gif}{here}.
+	
+	From that, we can infer what the two-dimensional convolution of the given image, B1, looks like. What was described above basically happens for every row and column of that image. Hence, if we visualized the grayvalue-intensity function in three-dimensional space, the result of this convolution would resemble a cone, if not a pyramid. If we project this intensity function back onto a plane, we obtain the image that results from the convolution. This image would show something like a fading circle, having the highest intensity (brightest color) in its center.
+	
+	We tried to confirm that our thinking is correct by computing the image actually resulting from the convolution of B1 with itself. To that end, we took advantage of the fact that the convolution in the spatial domain is dual to the multiplication in the frequency domain. The result, which is somewhat different from what we expected, is shown in \Cref{fig:task_1d}. Apparently, this is an unwanted effect of what is called cyclic convolution, which is why that result does not necessarily prove that we are wrong. In fact, it would look a lot like what we imagined if we sliced the image into four pieces and reordered them. To make the test, we performed the convolution on a a slight variation of the previous image, and obtained a resulting image that showed what we were expecting.
 	
 	\section{Practical Problems}
 	
 	\subsection{Greyvalue Normalization}
 	
 	See file \texttt{task\_2a.py}.
-	
-	\twodo{(Sibel) Apparently, this is not correct. I will go and talk to Benjamin to make sure whether I understood the task correctly.}
 	
 	\subsection{Fourier-Transform}
 	
