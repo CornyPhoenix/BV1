@@ -23,8 +23,8 @@ Showing an image in console
 '''
 def show(image):
     plot.axis('off')
-    #plot.imshow(image, cmap=plot.cm.gray)
-    plot.hist(image)
+    plot.imshow(image, cmap=plot.cm.gray)
+    #plot.hist(image)
     plot.show() 
 
 '''
