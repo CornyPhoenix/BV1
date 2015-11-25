@@ -23,11 +23,13 @@ Showing an image in console
 '''
 def show(image):
     plot.axis('off')
-    plot.imshow(image, cmap=plot.cm.gray)
+    #plot.imshow(image, cmap=plot.cm.gray)
+    plot.hist(image)
     plot.show() 
 
 '''
-Performing greyscale transformation on input image
+Performing linear greyscale transformation on input image to change the range 
+of the pixel intensity values in that image
 '''
 def transform_greyscale(image):
     '''Computing pixel value above darkest and below brightest percentile'''
@@ -36,32 +38,41 @@ def transform_greyscale(image):
     new_min = numpy.percentile(image, 5)
     new_max = numpy.percentile(image, 90)
     
-    print "Minimum pixel value:           ", old_min
-    print "Maximum pixel value:           ", old_max
-    print "Pixel value > 5th percentile:  ", new_min
-    print "Pixel value < 90th percentile: ", new_max
+    print "Min. intensity:  ", old_min
+    print "Max. intensity:  ", old_max
+    print "5th percentile:  ", new_min
+    print "90th percentile: ", new_max
     
-    '''Applying greyscale transformation to image'''
     (rows, cols) = image.shape
     
-    scaling_factor = 255 / (new_max - new_min)
+    '''Factor by which the histogram is stretched'''
+    factor = 255 / (new_max - new_min)
     
     for i in range(rows):
         for j in range(cols):
-            new_value_1 = image[i, j] - new_min
-            if new_value_1 >= 0:
-                image[i, j] = new_value_1
+            
+            '''
+            The whole histogram is moved along the x-axis (gray-value intensi-
+            ty), such that its desired lower bound of the range (5th percen-
+            tile) goes towards 0. Those pixels that get a negative value, are
+            mapped to 0.
+            '''
+            intensity_after_translation = image[i, j] - new_min
+            if intensity_after_translation >= 0:
+                image[i, j] = intensity_after_translation
             else:
                 image[i, j] = 0
-            new_value_2 = image[i, j] * scaling_factor
-            if new_value_2 <= 255:
-                image[i, j] = new_value_2
+                
+            '''
+            After that, the histogram is stretched along the x-axis, such that 
+            the desired upper bound of the range (90th percentile) moves to 
+            where its old upper bound (255) was.
+            '''
+            intensity_after_stretching = image[i, j] * factor
+            if intensity_after_stretching <= 255:
+                image[i, j] = intensity_after_stretching
             else:
                 image[i, j] = 255
-    
-    print "min: ", image.min()
-    print "max: ", image.max()
-    print image
     return image         
  
 if __name__ == "__main__":
@@ -71,8 +82,6 @@ if __name__ == "__main__":
         original = misc.imread(sys.argv[1], flatten=True)
     else:
         original = misc.lena()
-    
-    
     show(original)
     #misc.imsave('original.png', original)
     

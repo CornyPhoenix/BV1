@@ -13,7 +13,7 @@
 
 \titleformat{\subsection}[hang]{\large\bfseries}{\alph{subsection})\quad}{0pt}{}
 
-\newcommand{\twodo}[1]{\vspace{11pt}\textcolor{red}{\textbf{todo:} #1}}
+\newcommand{\twodo}{\vspace{11pt}\textcolor{red}{\textbf{todo}}}
 \newcommand{\subtask}[2]{\paragraph{#1)} \textit{#2} \newline}
 
 \title{\textbf{Exercises for Image Processing 1}\\Problem Sheet 4}
@@ -80,7 +80,18 @@
 	
 	\subsection{Greyvalue Normalization}
 	
-	See file \texttt{task\_2a.py}.
+	\begin{figure*} [t]
+		\centering
+		\begin{tabular}{c c}
+			\includegraphics[width=0.8\columnwidth]{figures/original.png}
+			&
+			\includegraphics[width=0.8\columnwidth]{figures/normalized.png}
+		\end{tabular}
+		\caption{\textit{Left:} Original image. \textit{Right:} Image resulting from the \textit{gray-scale normalization}, also referred to as \textit{histogram stretching}.}
+		\label{fig:task_2a}
+	\end{figure*}
+	
+	\Cref{fig:task_2a} shows the image obtained after the desired gray-scale normalization was performed. See file \texttt{task\_2a.py}.
 	
 	\subsection{Fourier-Transform}
 	
