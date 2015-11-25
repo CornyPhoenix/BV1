@@ -21,17 +21,39 @@
 	
 	\section{Theoretical Problems}
 	\subsection{Histograms and Noise}
-	
-	\begin{itemize}
-		\item Ein Histogramm repräsentiert, wie viele Pixel einen bestimmten Grauwert haben
-		\item Das Histogramm hätte zwei Spitzen, eine für das Fließband, die andere für die Pakete
-		\item Wenn das Rauschen Gaussverteilt ist, sollte sich das Histogramm eines normalen Bildes nicht großartig ändern.
-		\item Für jeden Pixel der dunkler wird, wird ein anderer Heller.
-		\item Außnahme ist ein komplett einfarbiges Bild
-	\end{itemize}
+		A histogram represents the number of pixels of every possible brightness in an image. The histogram of an image showing white parcels on a black conveyor belt would have two peaks, one at the low end caused by the belt and one at the high end caused by the parcels.\par
+		Noise should not change the histogram of an image if it has Gaussian probability, since the expectation value is zero. The only exception is an image with constant brightness, since every affected pixel decreases the peak of the histogram.
+
 	
 	\subsection{Projections}
+	In the case of black text on a white background, the valleys of the projection coincide with the spaces between the characters. Because of this the lines can be separated by cutting at the lowest spot of these valleys. Separating columns and single characters is not as simple, because of kerning and the different widths of the characters. Separating the lines first and then repeating the process for each one separately to get the single characters would be more effective.
+	
 	\subsection{Filters}
+	The average is linear because of the distributive property of addition and multiplication. The mean is not, as can be seen in the following case: 	
+	\\
+	\begin{center}
+	\begin{tabular}{|c|c|c|}
+	\hline
+	1&2&3 \\
+	\hline
+	4&5&6 \\
+	\hline
+	7&8&9 \\
+	\hline
+	\end{tabular}
+	\phantom{0000000000000}
+	\begin{tabular}{|c|c|c|}
+	\hline
+	1&2&3 \\
+	\hline
+	4&1&6 \\
+	\hline
+	7&8&9 \\
+	\hline
+	\end{tabular}
+	\end{center}
+	The sum of means is 9 but the mean of the sum is 8.	
+
 	\subsection{Convolution}
 	
 	If you look at B1, you can easily imagine that if we represent it by a function it would look like a rectangular peak. If you convolute two rectangular peaks with each other, they look like a triangular peak. So now take this one dimension higher, you can imagine that effect taking place in each direction of the image and so you get a rectangular shaped cone. You can see that resulting image B2 below.
