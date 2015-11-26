@@ -46,7 +46,7 @@
 	
 	\subsection{Convolution}
 	
-	The Convolution Matrix  filter uses a  first matrix which is the Image to be treated in the spatial domain. The image is a bi-dimensional collection of pixels in rectangular coordinates, and the used kernel depends on the required task or the desired effect to be applied. We take into consideration a 3x3 Mask. The  filter studies successively every pixel of the image, and it multiplies the value of the initial pixel and values of the 8 surrounding pixels by the kernel corresponding value. Then, it sums the results, and the initial pixel is set to this summed result value.
+	The convolution matrix  filter uses a first matrix which is the image to be treated in the spatial domain. The image is a bi-dimensional collection of pixels in rectangular coordinates, and the used kernel depends on the required task or the desired effect to be applied. We take into consideration a 3x3 Mask. The  filter studies successively every pixel of the image, and it multiplies the value of the initial pixel and values of the 8 surrounding pixels by the kernel corresponding value. Then, it sums the results, and the initial pixel is set to this summed result value.
 	
 	When applying the convolution of an image with itself, that will result in a convolution matrix that is equal in size to the original image B1, giving the weight of every pixel the value 1, so the value of every single pixel depends on the values of the pixels of the entire image, which will result in a more blurred and fuzzy optical effect in the image see B2.
 	
@@ -87,11 +87,11 @@
 			&
 			\includegraphics[width=0.8\columnwidth]{figures/normalized.png}
 		\end{tabular}
-		\caption{\textit{Left:} Original image. \textit{Right:} Image resulting from the \textit{gray-scale normalization}, also referred to as \textit{histogram stretching}.}
+		\caption{\textit{Left:} Original image. \textit{Right:} Image resulting from the \textit{gray-scale normalization}, also referred to as \textit{histogram stretching}. There is a visible enhancement in contrast when compared to the original image.}
 		\label{fig:task_2a}
 	\end{figure*}
 	
-	\Cref{fig:task_2a} shows the image obtained after the desired gray-scale normalization was performed. See file \texttt{task\_2a.py}.
+	\Cref{fig:task_2a} shows the image obtained after the desired gray-scale normalization was performed. The implementation can be found in \texttt{task\_2a.py}.
 	
 	\subsection{Fourier-Transform}
 	
