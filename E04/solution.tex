@@ -10,6 +10,7 @@
 \usepackage{hyperref}
 \usepackage{cleveref}
 \usepackage{tabularx}
+\usepackage{verbatim}
 
 \titleformat{\subsection}[hang]{\large\bfseries}{\alph{subsection})\quad}{0pt}{}
 
@@ -39,26 +40,92 @@
 	The extracted image strips showing a text line can then be processed further to separate the characters. To that end, a gray-value projection is performed on each image strip, but this time in ``row profile''. Using the resulting row vector of column sums, we can distinguish between columns that are involved in the rendering of the characters and those that show white spaces: The column sum for the former is way larger. Based on that, the characters can be extracted from these image strips using an appropriate threshold value.
 	
 	\subsection{Filters}
-	
-	This example shows the linear character of Gaussian averaging:
+	For a filter $F$ to be considered \textit{linear}, two conditions need to hold for any pair of signals $f_1(x)$ and $f_2(x)$:
+	\begin{itemize}
+		\item \textbf{Scaling:} 
+		\begin{align*}
+		F\{a \cdot f_1(x)\} = a \cdot F\{f_1(x)\}
+		\end{align*}
+		Multiplying the input signal of the filter by a constant factor $a$ scales the output by the same factor.
+		\item \textbf{Superposition:}
+		\begin{align*}
+		F\{f_1(x) + f_2(x)\} = F\{f_1(x)\} + F\{f_2(x)\}
+		\end{align*}
+		The result of a filter applied to a sum of signals is the sum of the results obtained when the same filter is applied to each individual input signal.
+	\end{itemize}
+
+	\paragraph{Gaussian Averaging} The impulse response of the one-dimensional Gaussian filter, for instance, is defined by:
 	\begin{align*}
-	G[f_{1} + f_{2}] &= G[f_{1}] + G[f_{2}] \\
-	G[af_{1}] &= aG[f_{1}] 	\\
-	G[af_{1} + bf_{2}] &= aG[f_{1}] + bG[f_{2}]\\
-	G &= \frac{{1}}\sum_{w} \sum{[af_{1} + bf_{2}]} \\
-	&= \frac{{1}}\sum_{w} \sum{af_{1}} + \frac{{1}}\sum_{w} \sum{bf_{2}}	 \\
-	&= \frac{{a}}\sum_{w} \sum{f_{1}} + \frac{{b}}\sum_{w} \sum{f_{2}}	\\ \\
+	g(x) = \frac{1}{\sqrt{2 \cdot \pi} \cdot \sigma} \cdot e^{-\frac{x^2}{2 \cdot \sigma^2}}
 	\end{align*}
-	
-	The following example shows the non-linear character of median filtering:
+	In Gaussian averaging, the values provided by this function are used as weights when averaging the brightness values over some small region of size $N$ (in an image, this would be a fixed-sized neighborhood around a pixel of interest $p$) of the input signal:
 	\begin{align*}
-	f_{1}= [5, 3, 17] \\
-	f_{2}= [13, 20, 7] \\ \\
-	med[f_{1} + f_{2}] \\
-	med [18, 23, 24] = 23 \\
-	med[f_{1}] + med[f_{2}] \\
-	5 + 13 = 18
+	F\{f_1(x)\} \Leftrightarrow \frac{1}{N} \cdot \sum_{n=1}^{N} g(x_n) \cdot f_1(x_n)
 	\end{align*}
+	The following shows the linear character of Gaussian averaging:
+	\begin{itemize}
+		\item \textbf{Scaling:}
+		\begin{align*}
+		F\{\mathbf{a} \cdot f_1(x)\} \\
+		=
+		\frac{1}{N} \cdot \sum_{n=1}^{N} g(x_n) \cdot \mathbf{a} \cdot f_1(x_n) \\
+		=
+		\mathbf{a} \cdot \frac{1}{N} \cdot \sum_{n=1}^{N} g(x_n) \cdot f_1(x_n) \\
+		\Leftrightarrow \mathbf{a} \cdot F\{f_1(x)\} 
+		\end{align*}
+		Basically, because $a$ is fixed and hence does not depend on $n$, it can be factored out of the sum.
+		\item \textbf{Superposition:}
+		\begin{align*}
+		F\{\mathbf{f_1(x)} + \mathbf{f_2(x)}\} \\
+		\Leftrightarrow
+		\frac{1}{N} \cdot \sum_{n=1}^{N} g(x_n) \cdot (\mathbf{f_1(x_n)} + \mathbf{f_2(x_n)}) \\
+		=
+		\frac{1}{N} \cdot \sum_{n=1}^{N} (g(x_n) \cdot \mathbf{f_1(x_n)} + g(x_n) \cdot \mathbf{f_2(x_n)}) \\
+		=
+		\frac{1}{N} \cdot \sum_{n=1}^{N} (g(x_n) \cdot \mathbf{f_1(x_n)}) + \frac{1}{N} \cdot \sum_{n=1}^{N} (g(x_n) \cdot \mathbf{f_2(x_n)}) \\
+		\Leftrightarrow F\{\mathbf{f_1(x)}\} + F\{\mathbf{f_2(x)}\} 
+		\end{align*}
+	\end{itemize}
+	
+	\paragraph{Median Filtering} We will show the non-linear character of median filtering with an example: Let the following be the list of brightness values for a region of the input signals $f_1$ and $f_2$.
+	\begin{align*}
+	f_1 &= [5, 3, 17] \\
+	f_2 &= [13, 20, 7]
+	\end{align*}
+	Computing the medians for each signal separately and adding them up yields:
+	\begin{align*}
+	med\{(f_1)\} &= 5 \\
+	med\{(f_2)\} &= 13 \\
+	med\{(f_1)\} + med\{(f_2)\} &= 18
+	\end{align*}
+	Now, if we add up the corresponding entries in both lists and then apply median filtering, the result is something different:
+	\begin{align*}
+	f_1 + f_2 &= [18, 23, 24] \\
+	med\{(f_1 + f_2)\} &= 23
+	\end{align*}
+	The superposition property is violated because $med\{(f_1)\} + med\{(f_2)\} \neq med\{(f_1 + f_2)\}$. Thus, the median filter is a non-linear filter.
+	
+	\begin{comment}
+		This example shows the linear character of Gaussian averaging:
+		\begin{align*}
+		G[f_{1} + f_{2}] &= G[f_{1}] + G[f_{2}] \\
+		G[af_{1}] &= aG[f_{1}] 	\\
+		G[af_{1} + bf_{2}] &= aG[f_{1}] + bG[f_{2}]\\
+		G &= \frac{{1}}\sum_{w} \sum{[af_{1} + bf_{2}]} \\
+		&= \frac{{1}}\sum_{w} \sum{af_{1}} + \frac{{1}}\sum_{w} \sum{bf_{2}}	 \\
+		&= \frac{{a}}\sum_{w} \sum{f_{1}} + \frac{{b}}\sum_{w} \sum{f_{2}}	\\ \\
+		\end{align*}
+		
+		The following example shows the non-linear character of median filtering:
+		\begin{align*}
+		f_{1}= [5, 3, 17] \\
+		f_{2}= [13, 20, 7] \\ \\
+		med[f_{1} + f_{2}] \\
+		med [18, 23, 24] = 23 \\
+		med[f_{1}] + med[f_{2}] \\
+		5 + 13 = 18
+		\end{align*}
+	\end{comment}
 	
 	\subsection{Convolution}
 	
