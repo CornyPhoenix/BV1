@@ -17,8 +17,6 @@ Möllers, Konstantin (6313136)
 
 from __future__ import division
 
-from math import log
-
 import matplotlib.pyplot as plt
 import numpy as np
 from numpy.fft import fft, ifft, fft2, ifft2
@@ -57,6 +55,16 @@ class Image:
         self.image = array
 
     @staticmethod
+    def from_file(filename):
+        """
+        Creates an image from a file.
+
+        :param filename: Filename to obtain the image file.
+        :return: image instance.
+        """
+        return Image(misc.imread(filename, flatten=True))
+
+    @staticmethod
     def from_histogram(histogram):
         """
         Creates an image from a histogram.
@@ -91,6 +99,13 @@ class Image:
         """
         return Image(apply_func_2d(frequency, ifft).real)
 
+    @staticmethod
+    def from_lena():
+        """
+        :return: instance of the image showing Lena Söderberg from the 1972 US-american Playboy.
+        """
+        return Image(misc.lena())
+
     def plot_gray(self):
         """
         Plots a gray value image.
@@ -121,40 +136,36 @@ class Image:
 
         return Image.from_histogram(result)
 
-    def convolve(self, other):
+    def convolve(self):
         """
         Convolution method with respect to padding.
+
+        :param other: The other image to convolve with this.
         """
-        image1 = self.image
-        image2 = other.image
+        # The size of the images.
+        height, width = self.image.shape
 
-        # The size of the images:
-        r1, c1 = image1.shape
-        r2, c2 = image2.shape
+        # Padding needed to move the expected peak to the center.
+        # As we convolve with the same image, we just multiply by 2.
+        height *= 2
+        width *= 2
 
-        # MinPad results simpler padding, smaller images:
-        r = r1 + r2
-        c = c1 + c2
+        # Convolution in the image domain is multiplication in the frequency domain,
+        # so we will apply a fft2 first and multiply then.
+        frequency_values = fft2(self.image, s=(height, width))
+        fft_image = frequency_values * frequency_values
 
-        # For nice FFT, we need the power of 2:
-        pr2 = int(log(r) / log(2.0) + 1.0)
-        pc2 = int(log(c) / log(2.0) + 1.0)
-        r_orig = r
-        c_orig = c
-        r = 2 ** pr2
-        c = 2 ** pc2
+        # Afterwards we transform back to the spatial domain.
+        spatial_values = ifft2(fft_image).real
 
-        # numpy fft has the padding built in, which can save us some steps
-        # here. The thing is the s(hape) parameter:
-        fft_image = fft2(image1, s=(r, c)) * fft2(image2, s=(r, c))
-
-        return Image((ifft2(fft_image))[:r_orig, :c_orig].real)
+        # Remove the padding for the resulting image so it obtains correct size.
+        # (We also box the image data in our Image class)
+        return Image(spatial_values[height / 4:3 * height / 4, width / 4:3 * width / 4])
 
     def normalize_gray_values(self):
         """
-        Normalizes gray values of an image.
+        Normalizes the gray values of this image.
 
-        :param image: The image to normalize.
         :return: A copy of the image with normalized gray values.
         """
         # Get image dimensions
@@ -198,12 +209,12 @@ class Image:
 
 if __name__ == '__main__':
     # Exercise 1d)
-    b1 = Image(misc.imread("B1.png", flatten=True))
-    b2 = b1.convolve(b1)
+    b1 = Image.from_file("B1.png")
+    b2 = b1.convolve()
     b2.save("B2.png")
 
     # Exercise 2a)
-    lena = Image(misc.lena())
+    lena = Image.from_lena()
 
     normalized_lena = lena.normalize_gray_values()
     normalized_lena.save("normalized_lena.png")
