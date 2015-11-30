@@ -17,8 +17,8 @@ Möllers, Konstantin (6313136)
 
 from __future__ import division
 
-import matplotlib.pyplot as plt
 import numpy as np
+import math
 from numpy import linalg as la
 from scipy import misc
 
@@ -51,8 +51,73 @@ def mse(matrix_a, matrix_b):
     """
     return ((matrix_a - matrix_b) ** 2).mean(axis=None)
 
+
+class Image:
+    def __init__(self, array):
+        self.image = array
+
+    @staticmethod
+    def from_file(filename):
+        """
+        Creates an image from a file.
+
+        :param filename: Filename to obtain the image file.
+        :return: image instance.
+        """
+        return Image(misc.imread(filename, flatten=True))
+
+    @staticmethod
+    def from_lena():
+        """
+        :return: instance of the image showing Lena Söderberg from the 1972 US-american Playboy.
+        """
+        return Image(misc.lena())
+
+    def save(self, filename):
+        """
+        Saves the image to file.
+
+        :param filename: Filename for the saved image.
+        """
+        min = self.image.min()
+        delta = self.image.max() - min
+        misc.imsave(filename, (self.image - min) / delta * 255)
+
+    def sobel(self):
+        """
+        Calculates the Sobel operator on this image.
+        :return: (magnitudes, angles)
+        """
+
+        g = self.image.copy()
+        shape = g.shape
+        magnitudes = np.zeros(shape)
+        angles = np.zeros(shape)
+        height, width = shape
+
+        for y in range(height):
+            y1 = max(y - 1, 0)
+            y2 = y
+            y3 = min(y + 1, height - 1)
+            for x in range(width):
+                x1 = max(x - 1, 0)
+                x2 = x
+                x3 = min(x + 1, width - 1)
+
+                delta_x = g[y1, x3] + 2 * g[y2, x3] + g[y3, x3] \
+                        - g[y1, x1] - 2 * g[y2, x1] - g[y3, x1]
+
+                delta_y = g[y3, x1] + 2 * g[y3, x2] + g[y3, x3] \
+                        - g[y1, x1] - 2 * g[y1, x2] - g[y1, x3]
+
+                magnitudes[y, x] = math.sqrt(delta_x ** 2 + delta_y ** 2) * np.sign(delta_x) * np.sign(delta_y)
+                if delta_x != 0:
+                    angles[y, x] = math.atan(delta_y / delta_x)
+
+        return magnitudes, angles
+
 if __name__ == '__main__':
-    # Exercise 2.2a)
+    # Exercise 2.1a)
 
     # covariance matrix V, taken from the exercise.
     covariance_matrix = 0.25 * np.matrix([
@@ -65,10 +130,16 @@ if __name__ == '__main__':
     # A is the matrix of three eigenvectors of V wit highest eigenvalues
     A = eigenvector_matrix(covariance_matrix, 3)
 
-    # Exercise 2.2b)
+    # Exercise 2.1b)
     x = np.array([
         [1, 2],
         [3, 4],
     ])
     error = mse(x, np.dot(np.dot(A.T, A), x.reshape(4)).reshape((2, 2)))
-    print error
+
+    # Exercise 2.2a)
+    lena = Image.from_lena()
+
+    sobel_magnitudes, sobel_angles = lena.sobel()
+    Image(sobel_magnitudes).save("sobel.png")
+
