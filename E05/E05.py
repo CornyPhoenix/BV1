@@ -83,6 +83,33 @@ class Image:
         delta = self.image.max() - min
         misc.imsave(filename, (self.image - min) / delta * 255)
 
+    def roberts_cross(self):
+        """
+        Calculates the Robert's Cross operator on this image.
+        :return: (magnitudes, angles)
+        """
+
+        g = self.image.copy()
+        shape = g.shape
+        magnitudes = np.zeros(shape)
+        angles = np.zeros(shape)
+        height, width = shape
+
+        for y in range(height):
+            y1 = max(y - 1, 0)
+            y2 = y
+            for x in range(width):
+                x1 = max(x - 1, 0)
+                x2 = x
+
+                d1 = g[y1, x2] - g[y2, x1]
+                d2 = g[y1, x1] - g[y2, x2]
+                magnitudes[y, x] = math.sqrt(d1 ** 2 + d2 ** 2) * np.sign(d1) * np.sign(d2)
+                if (g[y1, x2] - g[y2, x1]) != 0:
+                    angles[y, x] = math.atan((g[y2, x2] - g[y1, x1]) / (g[y1, x2] - g[y2, x1]))
+
+        return magnitudes, angles
+
     def sobel(self):
         """
         Calculates the Sobel operator on this image.
@@ -139,6 +166,9 @@ if __name__ == '__main__':
 
     # Exercise 2.2a)
     lena = Image.from_lena()
+
+    roberts_cross_magnitudes, roberts_cross_angles = lena.roberts_cross()
+    Image(roberts_cross_magnitudes).save("roberts_cross.png")
 
     sobel_magnitudes, sobel_angles = lena.sobel()
     Image(sobel_magnitudes).save("sobel.png")
