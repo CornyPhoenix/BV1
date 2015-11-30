@@ -45,6 +45,12 @@ def eigenvector_matrix(matrix, dims):
     return result
 
 
+def mse(matrix_a, matrix_b):
+    """
+    Calculates the minimum squared error (MSE) of two matrices.
+    """
+    return ((matrix_a - matrix_b) ** 2).mean(axis=None)
+
 if __name__ == '__main__':
     # Exercise 2.2a)
 
@@ -58,4 +64,11 @@ if __name__ == '__main__':
 
     # A is the matrix of three eigenvectors of V wit highest eigenvalues
     A = eigenvector_matrix(covariance_matrix, 3)
-    print np.dot(A, A.T)
+
+    # Exercise 2.2b)
+    x = np.array([
+        [1, 2],
+        [3, 4],
+    ])
+    error = mse(x, np.dot(np.dot(A.T, A), x.reshape(4)).reshape((2, 2)))
+    print error
