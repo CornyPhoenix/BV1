@@ -313,25 +313,28 @@ if __name__ == '__main__':
     lena = Image.from_lena()
     lena.save("lena.png")
 
-    print('Appyling Robert\'s Cross operator ...'),
+    print('Applying Robert\'s Cross operator ...'),
     roberts_cross = lena.roberts_cross()
     roberts_cross.magnitudes_image().save("roberts_cross_magnitudes.png")
-    roberts_cross.directions_image().save("robert_cross_directions.png")
+    roberts_cross.directions_image().save("roberts_cross_directions.png")
+    roberts_cross.magnitudes_image().laplacian().save("roberts_cross_laplacian.png")
     print('done.')
 
-    print('Appyling Sobel operator ...'),
+    print('Applying Sobel operator ...'),
     sobel = lena.sobel()
     sobel.magnitudes_image().save("sobel_magnitudes.png")
     sobel.directions_image().save("sobel_directions.png")
+    sobel.magnitudes_image().laplacian().save("sobel_laplacian.png")
     print('done.')
 
-    print('Appyling Kirsch operator ...'),
+    print('Applying Kirsch operator ...'),
     kirsch = lena.kirsch()
     kirsch.magnitudes_image().save("kirsch_magnitudes.png")
     kirsch.directions_image().save("kirsch_directions.png")
+    kirsch.magnitudes_image().laplacian().save("kirsch_laplacian.png")
     print('done.')
 
-    print('Appyling Laplacian operator ...'),
+    print('Applying Laplacian operator ...'),
     laplacian = lena.laplacian()
     laplacian.save("laplacian.png")
     print('done.')

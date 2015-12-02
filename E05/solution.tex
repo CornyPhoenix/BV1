@@ -8,6 +8,7 @@
 \usepackage{color}
 \usepackage{graphicx}
 \usepackage{titlesec}
+\usepackage{longtable}
 
 \titleformat{\section}[hang]{\Large\bfseries}{\Roman{section}\quad}{0pt}{}
 \titleformat{\subsection}[hang]{\large\bfseries}{\arabic{subsection}.\quad}{0pt}{}
@@ -95,5 +96,31 @@
 	\section{Practical Problems}
 	\subsection{(Lossy) Image Compression}
 	\subsection{Operators for Edge detection}
+	
+	This how the angles are colored in the following direction images: \quad
+	\raisebox{-1.9cm}{\includegraphics[width=4cm]{kompass}}
+	
+	\begin{longtable}{@{}p{\dimexpr\textwidth-8.5cm}@{}p{4cm}@{\hspace{.5cm}}p{4cm}@{}}
+		& \raisebox{-\totalheight}{\includegraphics[width=\linewidth]{lena}} \linebreak \textit{Original Image}&\\
+%		
+		a) \textbf{Robert's Cross operator} \par
+		Looks very noisy
+		& \raisebox{-\totalheight}{\includegraphics[width=\linewidth]{roberts_cross_magnitudes}} \linebreak \textit{Magnitudes}
+		& \raisebox{-\totalheight}{\includegraphics[width=\linewidth]{roberts_cross_directions}} \linebreak[1cm] \textit{Directions}\\
+%		
+		b) \textbf{Sobel operator} \par
+		& \raisebox{-\totalheight}{\includegraphics[width=\linewidth]{sobel_magnitudes}} \linebreak \textit{Magnitudes}
+		& \raisebox{-\totalheight}{\includegraphics[width=\linewidth]{sobel_directions}} \linebreak \textit{Directions}\\
+%		
+		c) \textbf{Kirsch operator}  \par
+		& \raisebox{-\totalheight}{\includegraphics[width=\linewidth]{kirsch_magnitudes}} \linebreak \textit{Magnitudes}
+		& \raisebox{-\totalheight}{\includegraphics[width=\linewidth]{kirsch_directions}} \linebreak \textit{Directions}\\
+%		
+		d) \textbf{Laplacian operator} \par
+		& \raisebox{-\totalheight}{\includegraphics[width=\linewidth]{laplacian}} \linebreak \textit{2\raisebox{2pt}{\footnotesize nd} Derivative}
+		&
+	\end{longtable}
+	
+	We would prefer the \textbf{Sobel operator}, because with it it's the easiest to recognize details of the face like eyes, lips and nose.
 
 \end{document}
