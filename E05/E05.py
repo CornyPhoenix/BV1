@@ -87,8 +87,8 @@ def hue_to_rgb(hue, saturation):
 
 
 class EdgeDetectionResult:
-    def __init__(self, magnitudes, angles):
-        self.angles = angles
+    def __init__(self, magnitudes, directions):
+        self.directions = directions
         self.magnitudes = magnitudes
 
     def magnitudes_image(self):
@@ -97,15 +97,15 @@ class EdgeDetectionResult:
         """
         return Image(self.magnitudes * 255)
 
-    def angles_image(self):
+    def directions_image(self):
         """
-        Creates an image of the angles.
+        Creates an image of the directions.
         """
-        height, width = self.angles.shape
+        height, width = self.directions.shape
         img = np.zeros((height, width, 3))
         for y in range(height):
             for x in range(width):
-                img[y, x, :] = hue_to_rgb(self.angles[y, x], abs(self.magnitudes[y, x]))
+                img[y, x, :] = hue_to_rgb(self.directions[y, x], abs(self.magnitudes[y, x]))
 
         return Image(img)
 
@@ -142,7 +142,7 @@ class Image:
     def roberts_cross(self):
         """
         Calculates the Robert's Cross operator on this image.
-        :return: (magnitudes, angles)
+        :return: (magnitudes, directions)
         """
 
         # Normalize image to 0..1
@@ -151,11 +151,8 @@ class Image:
         # Get image dimensions and create resulting images
         shape = g.shape
         magnitudes = np.zeros(shape)
-        angles = np.zeros(shape)
+        directions = np.zeros(shape)
         height, width = shape
-
-        # Some helper vars for optimization
-        sqrt2 = math.sqrt(2)
 
         for y in range(height):
             y1 = max(y - 1, 0)
@@ -167,19 +164,18 @@ class Image:
                 delta_1 = g[y1, x2] - g[y2, x1]
                 delta_2 = g[y1, x1] - g[y2, x2]
 
+                # Calculate direction
+                directions[y, x] = math.atan2(delta_2, delta_1)
+
                 # Save normalized (0..1) magnitude
-                magnitudes[y, x] = math.sqrt(delta_1 ** 2 + delta_2 ** 2) / sqrt2
+                magnitudes[y, x] = math.sqrt(delta_1 ** 2 + delta_2 ** 2)
 
-                # Calculate angle if possible
-                if (g[y1, x2] - g[y2, x1]) != 0:
-                    angles[y, x] = math.atan2(delta_2, delta_1)
-
-        return EdgeDetectionResult(magnitudes, angles)
+        return EdgeDetectionResult(magnitudes, directions)
 
     def sobel(self):
         """
         Calculates the Sobel operator on this image.
-        :return: (magnitudes, angles)
+        :return: (magnitudes, directions)
         """
 
         # Normalize image to 0..1
@@ -188,11 +184,8 @@ class Image:
         # Get image dimensions and create resulting images
         shape = g.shape
         magnitudes = np.zeros(shape)
-        angles = np.zeros(shape)
+        directions = np.zeros(shape)
         height, width = shape
-
-        # Some helper vars for optimization
-        sqrt32 = math.sqrt(2)
 
         for y in range(height):
             y1 = max(y - 1, 0)
@@ -211,18 +204,18 @@ class Image:
                 delta_y = g[y3, x1] + 2 * g[y3, x2] + g[y3, x3] \
                         - g[y1, x1] - 2 * g[y1, x2] - g[y1, x3]
 
-                # magnitude in -sqrt32..sqrt32
-                magnitude = math.sqrt(delta_x ** 2 + delta_y ** 2)
-                magnitudes[y, x] = magnitude / sqrt32
-                if delta_x != 0:
-                    angles[y, x] = math.atan2(delta_y, delta_x)
+                # Calculate direction
+                directions[y, x] = math.atan2(delta_y, delta_x)
 
-        return EdgeDetectionResult(magnitudes, angles)
+                # Save magnitude
+                magnitudes[y, x] = math.sqrt(delta_x ** 2 + delta_y ** 2)
+
+        return EdgeDetectionResult(magnitudes, directions)
 
     def kirsch(self):
         """
         Calculates the Kirsch operator on this image.
-        :return: (magnitudes, angles)
+        :return: (magnitudes, directions)
         """
 
         # Normalize image to 0..1
@@ -231,7 +224,7 @@ class Image:
         # Get image dimensions and create resulting images
         shape = g.shape
         magnitudes = np.zeros(shape)
-        angles = np.zeros(shape)
+        directions = np.zeros(shape)
         height, width = shape
 
         # Some helper vars for optimization
@@ -241,7 +234,6 @@ class Image:
 
         ys = [0, 1, 1, 1, 0, -1, -1, -1]  # Shift in Y direction
         xs = [1, 1, 0, -1, -1, -1, 0, 1]  # Shift in X direction
-        sqrt32 = math.sqrt(2)
 
         for y in range(height):
             for x in range(width):
@@ -249,13 +241,53 @@ class Image:
                 magns = [3 * (gk[k] + gk[mod(k + 1)] + gk[mod(k + 2)] + gk[mod(k + 3)] + gk[mod(k + 4)]) - 5 * (gk[mod(k + 5)] + gk[mod(k + 6)] + gk[mod(k + 7)]) for k in ks]
                 k_max = np.argsort(magns)[7]
 
-                magnitudes[y, x] = magns[k_max] / 15
-                angles[y, x] = math.pi * ((2 + k_max) % 8) / 4
+                # Calculate direction
+                directions[y, x] = math.pi * ((2 + k_max) % 8) / 4
 
-        return EdgeDetectionResult(magnitudes, angles)
+                # Get highest magnitude
+                magnitudes[y, x] = magns[k_max]
+
+        return EdgeDetectionResult(magnitudes, directions)
+
+    def laplacian(self):
+        """
+        Calculates the Laplacian operator on this image.
+        :return: (magnitudes, directions)
+        """
+
+        # Normalize image to 0..1
+        g = self.image.copy() / 255
+
+        # Get image dimensions and create resulting images
+        shape = g.shape
+        magnitudes = np.zeros(shape)
+        height, width = shape
+
+        # Some helper vars for optimization
+
+        for y in range(height):
+            y1 = max(y - 1, 0)
+            y2 = y
+            y3 = min(y + 1, height - 1)
+            for x in range(width):
+                x1 = max(x - 1, 0)
+                x2 = x
+                x3 = min(x + 1, width - 1)
+
+                nabla2 = (g[y2, x3] - g[y2, x2]) - (g[y2, x2] - g[y2, x1]) \
+                       + (g[y3, x2] - g[y2, x2]) - (g[y2, x2] - g[y1, x2])
+
+                # Normalization to 0..255
+                magnitudes[y, x] = nabla2
+
+        return Image(magnitudes)
+
+
 
 if __name__ == '__main__':
     # Exercise 2.1a)
+    print('EXERCISE 2.1')
+    print('============')
 
     # covariance matrix V, taken from the exercise.
     covariance_matrix = 0.25 * np.matrix([
@@ -276,23 +308,31 @@ if __name__ == '__main__':
     error = mse(x, np.dot(np.dot(A.T, A), x.reshape(4)).reshape((2, 2)))
 
     # Exercise 2.2a)
+    print('EXERCISE 2.2')
+    print('============')
     lena = Image.from_lena()
+    lena.save("lena.png")
 
     print('Appyling Robert\'s Cross operator ...'),
     roberts_cross = lena.roberts_cross()
     roberts_cross.magnitudes_image().save("roberts_cross_magnitudes.png")
-    roberts_cross.angles_image().save("roberts_cross_angles.png")
+    roberts_cross.directions_image().save("robert_cross_directions.png")
     print('done.')
 
     print('Appyling Sobel operator ...'),
     sobel = lena.sobel()
     sobel.magnitudes_image().save("sobel_magnitudes.png")
-    sobel.angles_image().save("sobel_angles.png")
+    sobel.directions_image().save("sobel_directions.png")
     print('done.')
 
     print('Appyling Kirsch operator ...'),
     kirsch = lena.kirsch()
     kirsch.magnitudes_image().save("kirsch_magnitudes.png")
-    kirsch.angles_image().save("kirsch_angles.png")
+    kirsch.directions_image().save("kirsch_directions.png")
+    print('done.')
+
+    print('Appyling Laplacian operator ...'),
+    laplacian = lena.laplacian()
+    laplacian.save("laplacian.png")
     print('done.')
 
