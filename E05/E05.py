@@ -52,6 +52,64 @@ def mse(matrix_a, matrix_b):
     return ((matrix_a - matrix_b) ** 2).mean(axis=None)
 
 
+def hue_to_rgb(hue, saturation):
+    """
+    Converts a HSV value to an RGB array.
+    """
+    while hue < 0:
+        hue += 2 * math.pi
+    while hue > 2 * math.pi:
+        hue -= 2 * math.pi
+
+    k = 3 * hue / math.pi
+    i = math.floor(k)
+    f = (k - i)
+    p = 255 * (1 - saturation)
+    q = 255 * (1 - saturation * f)
+    t = 255 * (1 - saturation * (1 - f))
+
+    if i == 0 or i == 6:
+        return [255, t, p]
+
+    if i == 1:
+        return [q, 255, p]
+
+    if i == 2:
+        return [p, 255, t]
+
+    if i == 3:
+        return [p, q, 255]
+
+    if i == 4:
+        return [t, p, 255]
+
+    return [255, p, q]
+
+
+class EdgeDetectionResult:
+    def __init__(self, magnitudes, angles):
+        self.angles = angles
+        self.magnitudes = magnitudes
+
+    def magnitudes_image(self):
+        """
+        Creates an image of the magnitudes.
+        """
+        return Image(self.magnitudes * 255)
+
+    def angles_image(self):
+        """
+        Creates an image of the angles.
+        """
+        height, width = self.angles.shape
+        img = np.zeros((height, width, 3))
+        for y in range(height):
+            for x in range(width):
+                img[y, x, :] = hue_to_rgb(self.angles[y, x], abs(self.magnitudes[y, x]))
+
+        return Image(img)
+
+
 class Image:
     def __init__(self, array):
         self.image = array
@@ -79,9 +137,7 @@ class Image:
 
         :param filename: Filename for the saved image.
         """
-        min = self.image.min()
-        delta = self.image.max() - min
-        misc.imsave(filename, (self.image - min) / delta * 255)
+        misc.imsave(filename, self.image)
 
     def roberts_cross(self):
         """
@@ -89,11 +145,17 @@ class Image:
         :return: (magnitudes, angles)
         """
 
-        g = self.image.copy()
+        # Normalize image to 0..1
+        g = self.image.copy() / 255
+
+        # Get image dimensions and create resulting images
         shape = g.shape
         magnitudes = np.zeros(shape)
         angles = np.zeros(shape)
         height, width = shape
+
+        # Some helper vars for optimization
+        sqrt2 = math.sqrt(2)
 
         for y in range(height):
             y1 = max(y - 1, 0)
@@ -102,13 +164,17 @@ class Image:
                 x1 = max(x - 1, 0)
                 x2 = x
 
-                d1 = g[y1, x2] - g[y2, x1]
-                d2 = g[y1, x1] - g[y2, x2]
-                magnitudes[y, x] = math.sqrt(d1 ** 2 + d2 ** 2) * np.sign(d1) * np.sign(d2)
-                if (g[y1, x2] - g[y2, x1]) != 0:
-                    angles[y, x] = math.atan((g[y2, x2] - g[y1, x1]) / (g[y1, x2] - g[y2, x1]))
+                delta_1 = g[y1, x2] - g[y2, x1]
+                delta_2 = g[y1, x1] - g[y2, x2]
 
-        return magnitudes, angles
+                # Save normalized (0..1) magnitude
+                magnitudes[y, x] = math.sqrt(delta_1 ** 2 + delta_2 ** 2) / sqrt2
+
+                # Calculate angle if possible
+                if (g[y1, x2] - g[y2, x1]) != 0:
+                    angles[y, x] = math.atan2(delta_2, delta_1)
+
+        return EdgeDetectionResult(magnitudes, angles)
 
     def sobel(self):
         """
@@ -116,11 +182,17 @@ class Image:
         :return: (magnitudes, angles)
         """
 
-        g = self.image.copy()
+        # Normalize image to 0..1
+        g = self.image.copy() / 255
+
+        # Get image dimensions and create resulting images
         shape = g.shape
         magnitudes = np.zeros(shape)
         angles = np.zeros(shape)
         height, width = shape
+
+        # Some helper vars for optimization
+        sqrt32 = math.sqrt(2)
 
         for y in range(height):
             y1 = max(y - 1, 0)
@@ -131,17 +203,56 @@ class Image:
                 x2 = x
                 x3 = min(x + 1, width - 1)
 
+                # delta_x in -4..4
                 delta_x = g[y1, x3] + 2 * g[y2, x3] + g[y3, x3] \
                         - g[y1, x1] - 2 * g[y2, x1] - g[y3, x1]
 
+                # delta_y in -4..4
                 delta_y = g[y3, x1] + 2 * g[y3, x2] + g[y3, x3] \
                         - g[y1, x1] - 2 * g[y1, x2] - g[y1, x3]
 
-                magnitudes[y, x] = math.sqrt(delta_x ** 2 + delta_y ** 2) * np.sign(delta_x) * np.sign(delta_y)
+                # magnitude in -sqrt32..sqrt32
+                magnitude = math.sqrt(delta_x ** 2 + delta_y ** 2)
+                magnitudes[y, x] = magnitude / sqrt32
                 if delta_x != 0:
-                    angles[y, x] = math.atan(delta_y / delta_x)
+                    angles[y, x] = math.atan2(delta_y, delta_x)
 
-        return magnitudes, angles
+        return EdgeDetectionResult(magnitudes, angles)
+
+    def kirsch(self):
+        """
+        Calculates the Kirsch operator on this image.
+        :return: (magnitudes, angles)
+        """
+
+        # Normalize image to 0..1
+        g = self.image.copy() / 255
+
+        # Get image dimensions and create resulting images
+        shape = g.shape
+        magnitudes = np.zeros(shape)
+        angles = np.zeros(shape)
+        height, width = shape
+
+        # Some helper vars for optimization
+        ks = range(8)  # 0..7
+        mod = lambda k: k % 8
+        limit = lambda k, mn, mx: mn if (k < mn) else mx if (k > mx) else k
+
+        ys = [0, 1, 1, 1, 0, -1, -1, -1]  # Shift in Y direction
+        xs = [1, 1, 0, -1, -1, -1, 0, 1]  # Shift in X direction
+        sqrt32 = math.sqrt(2)
+
+        for y in range(height):
+            for x in range(width):
+                gk = [g[limit(y + ys[k], 0, height - 1), limit(x + xs[k], 0, width - 1)] for k in ks]
+                magns = [3 * (gk[k] + gk[mod(k + 1)] + gk[mod(k + 2)] + gk[mod(k + 3)] + gk[mod(k + 4)]) - 5 * (gk[mod(k + 5)] + gk[mod(k + 6)] + gk[mod(k + 7)]) for k in ks]
+                k_max = np.argsort(magns)[7]
+
+                magnitudes[y, x] = magns[k_max] / 15
+                angles[y, x] = math.pi * ((2 + k_max) % 8) / 4
+
+        return EdgeDetectionResult(magnitudes, angles)
 
 if __name__ == '__main__':
     # Exercise 2.1a)
@@ -167,9 +278,21 @@ if __name__ == '__main__':
     # Exercise 2.2a)
     lena = Image.from_lena()
 
-    roberts_cross_magnitudes, roberts_cross_angles = lena.roberts_cross()
-    Image(roberts_cross_magnitudes).save("roberts_cross.png")
+    print('Appyling Robert\'s Cross operator ...'),
+    roberts_cross = lena.roberts_cross()
+    roberts_cross.magnitudes_image().save("roberts_cross_magnitudes.png")
+    roberts_cross.angles_image().save("roberts_cross_angles.png")
+    print('done.')
 
-    sobel_magnitudes, sobel_angles = lena.sobel()
-    Image(sobel_magnitudes).save("sobel.png")
+    print('Appyling Sobel operator ...'),
+    sobel = lena.sobel()
+    sobel.magnitudes_image().save("sobel_magnitudes.png")
+    sobel.angles_image().save("sobel_angles.png")
+    print('done.')
+
+    print('Appyling Kirsch operator ...'),
+    kirsch = lena.kirsch()
+    kirsch.magnitudes_image().save("kirsch_magnitudes.png")
+    kirsch.angles_image().save("kirsch_angles.png")
+    print('done.')
 
