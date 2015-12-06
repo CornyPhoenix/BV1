@@ -11,6 +11,7 @@
 \usepackage{cleveref}
 \usepackage{tabularx}
 \usepackage{todonotes}
+\usepackage{verbatim}
 
 %\titleformat{\subsection}[hang]{\large\bfseries}{\alph{subsection})\quad}{0pt}{}
 
@@ -28,7 +29,7 @@
 	\subsection{(Lossless) Image Compression}
 	
 	\paragraph{a)} % What is the entropy of such documents?
-	The so-called \textit{entropy} of such documents denotes the mean number of bits required to encode the contained information and can be computed using following formula:
+	The so-called \textit{entropy} of such documents can be computed using following formula:
 	\begin{align*}
 	H = \sum_{g=0}^{G-1} P(g) \cdot \log_{2}\left(\frac{1}{P(g)}\right)
 	\end{align*}
@@ -63,12 +64,25 @@
 	&\approx 0.570998
 	\end{align*}
 	
+	Basically, this value tells how much information is contained in these documents. In general, the more uncertain or random the event is, the more information it will contain. Because, in 90\% of the cases the color will be white, there is no uncertainty, leading to this rather low entropy value. On the otherhand, the entropy with equally probable colors is equal to the number of bits required for coding. \footnote{\url{https://simple.wikipedia.org/wiki/Information_entropy}}
+	
+	\vspace{12pt}
+	\todo[inline]{Sibel: Will rephrase this paragraph!}
+	
+	\begin{comment}
+		Very intuitive example from "Simple Wikipedia":
+		
+		Let's look at an example. If someone is told something they already know, the information they get is very small. It will be pointless for them to be told something they already know. This information would have very low entropy.
+		
+		If they were told about something they knew little about, they would get much new information. This information would be very valuable to them. They would learn something. This information would have high entropy.
+	\end{comment}
+	
 	\paragraph{b)} % Design a Huffman code for the pixels.
 	See \Cref{fig:huffman_code}.
-	%TODO Part I Task 1b
 	\begin{figure*}[t]
 		\begin{minipage}{0.45\textwidth}
 			%\includegraphics[width=\linewidth]{imagefile}
+			\todo[inline]{Sibel: Image will be added soon!}
 		\end{minipage}
 		\hfill
 		\begin{minipage}{0.45\textwidth}
@@ -88,7 +102,7 @@
 	\end{figure*}
 	
 	\paragraph{c)} % What is the mean length of a code word?
-	The mean length of a code word can be computed by weighting the length of the Huffman codes obtained for each color with the respective probabilities and summing them up:
+	The \textit{mean length of a code word} can be computed by weighting the length of the Huffman codes obtained for each color with the respective probabilities and summing them up:
 	\begin{align*}
 	\text{mean} 
 	&= 0.9 \cdot 1 	 &(=0.9) \\
@@ -102,7 +116,14 @@
 	See \Cref{fig:huffman_code} for the values.
 	
 	\paragraph{d)} % What is the redundancy of the following 4-bit code?
-	%TODO Part I Task 1d
+	The redundancy $r$ of the given 4-bit code can be computed like so:
+	\begin{align*}
+	r = b - H
+	\end{align*}
+	Here, $b$ is the number of bits used for each pixel, which is four in this case, and $H$ is the entropy of the pixel source, which we computed above already. Thus, we obtain:
+	\begin{align*}
+		r = 4 - 0.570998 = 3.429002
+	\end{align*}
 	
 	\subsection{Image Segmentation}
 	
@@ -134,9 +155,12 @@
 	\paragraph{a)} See file \texttt{task\_2\_1.py}.
 	
 	\vspace{12pt}
-	\todo[inline]{Sibel@Nour: I changed a little bit in your implementation. You forgot to sort the eigenvectors based on their corresponding eigenvalues and take the eigenvectors for the three largest eigenvalues. Then, I renamed some of the variables with more expressive names, because I started to get confused. I hope that's ok. :)}
+	\todo[inline]{Sibel@Nour: I changed a little bit in your implementation. You forgot to sort the eigenvectors according to their corresponding eigenvalues and take the eigenvectors for the three largest eigenvalues. Then, I renamed some of the variables with more expressive names, because I started to get confused. I hope that's ok. :)}
 	
-	\paragraph{b)}
+	\paragraph{b)} -
+	
+	\vspace{12pt}
+	\todo[inline]{Sibel: I have an idea for this part, will add it soon!}
 	
 	\subsection{Operators for Edge Detection}
 	
