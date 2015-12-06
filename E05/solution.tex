@@ -92,13 +92,39 @@
 	\noindent As we can see, our Huffman code is much less redundant than the 4-bit code given from the exercise; as the latter has a redundancy value of 3.429002 whether the former has just one of 0.560002.
 	
 	\subsection{Image Segmentation}
-
+	\subsubsection{}
+	Thresholding only works if the brightness values of the segments are different from the background. They also need to be consistent within the segment. It would work well for black text on white background photographed with even lighting. If the lighting is in inconsistent and the letters have gradient colors or other patterns, it might lead to wrong results.
+	\begin{figure}[h]
+	\center
+	\fbox{\includegraphics[scale=0.5]{threshold_ex.png}}\\
+	\caption{Another example for when thresholding does not work for segmentation.}
+	\end{figure}
+	
+	\subsubsection{}
+	The Bimodality does not guarantee a successful segmentation by thresholding. If there are multiple light sources, the contrast along an edge can be reversed. As an example, consider the picture of the Michaelis Church from the lecture. Its histogram is bimodal but thresholding would not be able to segment correctly along the vertical edge.
+	
+	\subsubsection{}	
+	Component labeling is necessary to identify connected areas correctly.
+	
+	\subsubsection{}
+	The most typical problem in edge detection is separating real edges from noise. If the edge detection is too sensitive, it will falsely identify noise as edges, if it is not sensitive enough it will miss actual edges. The Canny Operator aims to solve this problem by convolving the image with Gaussian filters of different scales and compiling the results using feature synthesis. 
+	
 	\section{Practical Problems}
 	\subsection{(Lossy) Image Compression}
+	\subsubsection{Matrix}
+	$A_3 =
+	\begin{pmatrix}
+	0.5 & 0.5 & 0.5 & 0.5\\
+	0.5 & -0.5 & 0.5 & -0.5\\
+	-0.5 & -0.5 & 0.5 & 0.5\\
+    \end{pmatrix}		
+	$
+	\subsubsection{Error}
+	$MSE = 2.5175756233 \cdot 10^{-30}$
+	
 	\subsection{Operators for Edge detection}
 	
 	This how the angles are colored in the following direction images: \quad
-	\raisebox{-1.9cm}{\includegraphics[width=4cm]{kompass}}
 	
 	\begin{longtable}{@{}p{\dimexpr\textwidth-8.5cm}@{}p{4cm}@{\hspace{.5cm}}p{4cm}@{}}
 		& \raisebox{-\totalheight}{\includegraphics[width=\linewidth]{lena}} \linebreak \textit{Original Image}&\\
@@ -121,6 +147,6 @@
 		&
 	\end{longtable}
 	
-	We would prefer the \textbf{Sobel operator}, because with it it's the easiest to recognize details of the face like eyes, lips and nose.
+	The Kirsch and Sobel operators are not as susceptible to noise as the other two and are thus preferable in real world scenarios. We would prefer the \textbf{Sobel operator}, because with it it's the easiest to recognize details of the face like eyes, lips and nose.
 
 \end{document}

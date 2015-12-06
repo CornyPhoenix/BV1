@@ -306,6 +306,8 @@ if __name__ == '__main__':
         [3, 4],
     ])
     error = mse(x, np.dot(np.dot(A.T, A), x.reshape(4)).reshape((2, 2)))
+    print("A3 = ", A)
+    print("Error = ", error)
 
     # Exercise 2.2a)
     print('EXERCISE 2.2')
