@@ -10,8 +10,9 @@
 \usepackage{hyperref}
 \usepackage{cleveref}
 \usepackage{tabularx}
+\usepackage{todonotes}
 
-\titleformat{\subsection}[hang]{\large\bfseries}{\alph{subsection})\quad}{0pt}{}
+%\titleformat{\subsection}[hang]{\large\bfseries}{\alph{subsection})\quad}{0pt}{}
 
 \newcommand{\twodo}{\vspace{11pt}\textcolor{red}{\textbf{todo}}}
 \newcommand{\subtask}[2]{\paragraph{#1)} \textit{#2} \newline}
@@ -23,17 +24,100 @@
 	\maketitle
 	
 	\section{Theoretical Problems}
-
-	
-
 	
 	\subsection{(Lossless) Image Compression}
 	
+	\paragraph{a)} % What is the entropy of such documents?
+	The so-called \textit{entropy} of such documents denotes the mean number of bits required to encode the contained information and can be computed using following formula:
+	\begin{align*}
+	H = \sum_{g=0}^{G-1} P(g) \cdot \log_{2}\left(\frac{1}{P(g)}\right)
+	\end{align*}
+	Here, $G$ is the number of colors and $P(g)$ is the probability with which a particular color $g$ occurs in such a document. The following are the colors and their respective probabilities:
+	\begin{center}
+		\begin{tabular}{l r}
+			$\mathbf{g}$ & $\mathbf{P(g)}$ \\
+			\hline
+			White  & 0.9   \\
+			Black  & 0.08  \\
+			Blue   & 0.012 \\
+			Red    & 0.005 \\
+			Green  & 0.002 \\
+			Yellow & 0.001 \\
+		\end{tabular}
+	\end{center}
+	Given these, we obtain the following intermediate results as well as the overall result for the entropy:
+	\begin{align*}
+	H
+	&= 0.9 \cdot \log_{2}\left(\frac{1}{0.9}\right)
+	&(\approx 0.13680) \\
+	&+ 0.08 \cdot \log_{2}\left(\frac{1}{0.08}\right)
+	&(\approx 0.29151) \\
+	&+ 0.012 \cdot \log_{2}\left(\frac{1}{0.012}\right)
+	&(\approx 0.07657) \\
+	&+ 0.005 \cdot \log_{2}\left(\frac{1}{0.005}\right)
+	&(\approx 0.03822) \\
+	&+ 0.002 \cdot \log_{2}\left(\frac{1}{0.002}\right)
+	&(\approx 0.01793) \\
+	&+ 0.001 \cdot \log_{2}\left(\frac{1}{0.001}\right)
+	&(\approx 0.00997) \\
+	&\approx 0.570998
+	\end{align*}
+	
+	\paragraph{b)} % Design a Huffman code for the pixels.
+	See \Cref{fig:huffman_code}.
+	%TODO Part I Task 1b
+	\begin{figure*}[t]
+		\begin{minipage}{0.45\textwidth}
+			%\includegraphics[width=\linewidth]{imagefile}
+		\end{minipage}
+		\hfill
+		\begin{minipage}{0.45\textwidth}
+			\begin{tabular}{l r r c}
+				\textbf{Color} & \textbf{Probability} & \textbf{Code} & \textbf{Length}\\
+				\hline
+				White & 0.9 & 0 & 1 \\
+				Black & 0.08 & 10 & 2 \\
+				Blue & 0.012 & 110 & 3 \\
+				Red & 0.005 & 1110 & 4 \\
+				Green & 0.002 & 11110 & 5 \\
+				Yellow & 0.001 & 11111 & 5
+			\end{tabular}
+		\end{minipage}
+		\caption{TODO}
+		\label{fig:huffman_code}
+	\end{figure*}
+	
+	\paragraph{c)} % What is the mean length of a code word?
+	The mean length of a code word can be computed by weighting the length of the Huffman codes obtained for each color with the respective probabilities and summing them up:
+	\begin{align*}
+	\text{mean} 
+	&= 0.9 \cdot 1 	 &(=0.9) \\
+	&+ 0.08 \cdot 2  &(=0.16) \\
+	&+ 0.012 \cdot 3 &(=0.036) \\ 
+	&+ 0.005 \cdot 4 &(=0.02) \\ 
+	&+ 0.002 \cdot 5 &(=0.01) \\ 
+	&+ 0.001 \cdot 5 &(=0.005) \\ 
+	&= 1.131
+	\end{align*}
+	See \Cref{fig:huffman_code} for the values.
+	
+	\paragraph{d)} % What is the redundancy of the following 4-bit code?
+	%TODO Part I Task 1d
+	
 	\subsection{Image Segmentation}
 	
-	c. The need of component labeling for object detection after thresholding is due to the classification/distinguishment of pixels in each region of the image.
+	\paragraph{a)} % When may simple threshold-based segmentation approaches be applicable for image segmentation, when not? Give at least one example for each.
 	
-	d. The most common problem in edge detection aaproaches is its sensitvity to noise, which makes edge detection inaccurate.
+	
+	\paragraph{b)} % Does the bi-modality of the image histogram guarantee successful image segmentation if threshold-based image segmentation is applied and the threshold is selected in the minimum between the two histogram maxima?
+	
+	\paragraph{c)} % Explain the need of component labeling for object detection after thresholding.
+	
+	The need of component labeling for object detection after thresholding is due to the classification/distinguishment of pixels in each region of the image.
+	
+	\paragraph{d)} % What is the most typical problem in edge detection approaches? How does the Canny-algorithm try to enhance the segmentation quality?
+
+	The most common problem in edge detection aaproaches is its sensitvity to noise, which makes edge detection inaccurate.
 	
 	Canny-Algorithm:
 	What Canny-algorithm does is that it takes the sobel operator and use is to thin the orientation of the edge, and then use the thresholding to find dominant edges in the image.
@@ -46,6 +130,13 @@
 	\section{Practical Problems}
 	
 	\subsection{(Lossy) Image Compression}
+	
+	\paragraph{a)} See file \texttt{task\_2\_1.py}.
+	
+	\vspace{12pt}
+	\todo[inline]{Sibel@Nour: I changed a little bit in your implementation. You forgot to sort the eigenvectors based on their corresponding eigenvalues and take the eigenvectors for the three largest eigenvalues. Then, I renamed some of the variables with more expressive names, because I started to get confused. I hope that's ok. :)}
+	
+	\paragraph{b)}
 	
 	\subsection{Operators for Edge Detection}
 	
