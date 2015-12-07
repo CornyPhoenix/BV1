@@ -22,7 +22,6 @@ import math
 from numpy import linalg as la
 from scipy import misc
 from scipy.signal import convolve2d
-import matplotlib.pyplot as plt
 
 
 def eigenvector_matrix(matrix, dims):
@@ -54,10 +53,11 @@ def mse(matrix_a, matrix_b):
     return ((matrix_a - matrix_b) ** 2).mean(axis=None)
 
 
-def hue_to_rgb(hue, saturation):
+def hue_to_rgb(hue, saturation=1, alpha=1):
     """
     Converts a HSV value to an RGB array.
     """
+    alpha *= 255
     while hue < 0:
         hue += 2 * math.pi
     while hue > 2 * math.pi:
@@ -71,21 +71,21 @@ def hue_to_rgb(hue, saturation):
     t = 255 * (1 - saturation * (1 - f))
 
     if i == 0 or i == 6:
-        return [255, t, p]
+        return [255, t, p, alpha]
 
     if i == 1:
-        return [q, 255, p]
+        return [q, 255, p, alpha]
 
     if i == 2:
-        return [p, 255, t]
+        return [p, 255, t, alpha]
 
     if i == 3:
-        return [p, q, 255]
+        return [p, q, 255, alpha]
 
     if i == 4:
-        return [t, p, 255]
+        return [t, p, 255, alpha]
 
-    return [255, p, q]
+    return [255, p, q, alpha]
 
 
 class EdgeDetectionResult:
@@ -97,8 +97,7 @@ class EdgeDetectionResult:
         """
         Creates an image of some gray values.
         """
-        plt.axis('off')
-        plt.imsave("img/" + self.prefix + "_" + name + ".png", grayvalues, cmap='gray')
+        misc.imsave("img/" + self.prefix + "_" + name + ".png", grayvalues)
 
     def save_magnitudes(self, mag=None):
         """
@@ -130,12 +129,32 @@ class EdgeDetectionResult:
             directions = np.angle(self.gradients)
 
         height, width = directions.shape
-        img = np.zeros((height, width, 3))
+        img = np.zeros((height, width, 4))
         for y in range(height):
             for x in range(width):
-                img[y, x, :] = hue_to_rgb(directions[y, x], 1)
+                img[y, x, :] = hue_to_rgb(hue=directions[y, x])
 
         misc.imsave("img/" + self.prefix + "_directions.png", img)
+
+    def save_combined(self, mag=None, directions=None):
+        """
+        Creates an image of the directions.
+        :param mag: Explicit magnitudes to save.
+        :param directions: Explicit directions to save.
+        """
+        if mag is None:
+            mag_abs = np.absolute(self.gradients)
+            mag = mag_abs / np.max(mag_abs)
+        if directions is None:
+            directions = np.angle(self.gradients)
+
+        height, width = directions.shape
+        img = np.zeros((height, width, 4))
+        for y in range(height):
+            for x in range(width):
+                img[y, x, :] = hue_to_rgb(directions[y, x], 1, mag[y, x])
+
+        misc.imsave("img/" + self.prefix + "_combined.png", img)
 
     def save_images(self):
         for name in self.images.iterkeys():
@@ -194,6 +213,7 @@ class Image:
         result.save_directions()
         result.save_real()
         result.save_imag()
+        result.save_combined()
 
         return result
 
@@ -274,6 +294,7 @@ class Image:
         result = EdgeDetectionResult("kirsch", [])
         result.save_magnitudes(-magnitudes)
         result.save_directions(directions)
+        result.save_combined(magnitudes / np.max(magnitudes), directions)
 
         return result
 
