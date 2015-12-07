@@ -21,6 +21,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from numpy.fft import fft, ifft, fft2, ifft2
 from scipy import misc
+from scipy.signal import fftconvolve
 
 
 def apply_func_2d(image, func):
@@ -142,25 +143,7 @@ class Image:
 
         :param other: The other image to convolve with this.
         """
-        # The size of the images.
-        height, width = self.image.shape
-
-        # Padding needed to move the expected peak to the center.
-        # As we convolve with the same image, we just multiply by 2.
-        height *= 2
-        width *= 2
-
-        # Convolution in the image domain is multiplication in the frequency domain,
-        # so we will apply a fft2 first and multiply then.
-        frequency_values = fft2(self.image, s=(height, width))
-        fft_image = frequency_values * frequency_values
-
-        # Afterwards we transform back to the spatial domain.
-        spatial_values = ifft2(fft_image).real
-
-        # Remove the padding for the resulting image so it obtains correct size.
-        # (We also box the image data in our Image class)
-        return Image(spatial_values[height / 4:3 * height / 4, width / 4:3 * width / 4])
+        return Image(fftconvolve(self.image, self.image, mode='same'))
 
     def normalize_gray_values(self):
         """
@@ -213,17 +196,17 @@ if __name__ == '__main__':
     b2 = b1.convolve()
     b2.save("B2.png")
 
-    # Exercise 2a)
-    lena = Image.from_lena()
-
-    normalized_lena = lena.normalize_gray_values()
-    normalized_lena.save("normalized_lena.png")
-
-    # Histograms:
-    lena.histogram().save("histogram_lena.png")
-    normalized_lena.histogram().save("histogram_normalized_lena.png")
-
-    # Exercise 2b)
-    fft_image = lena.fourier_transform()
-    rev_image = Image.from_frequency_domain(fft_image)
-    rev_image.save("rev_image.png")
+    # # Exercise 2a)
+    # lena = Image.from_lena()
+    #
+    # normalized_lena = lena.normalize_gray_values()
+    # normalized_lena.save("normalized_lena.png")
+    #
+    # # Histograms:
+    # lena.histogram().save("histogram_lena.png")
+    # normalized_lena.histogram().save("histogram_normalized_lena.png")
+    #
+    # # Exercise 2b)
+    # fft_image = lena.fourier_transform()
+    # rev_image = Image.from_frequency_domain(fft_image)
+    # rev_image.save("rev_image.png")
