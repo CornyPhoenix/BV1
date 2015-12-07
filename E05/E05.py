@@ -21,6 +21,8 @@ import numpy as np
 import math
 from numpy import linalg as la
 from scipy import misc
+from scipy.signal import convolve2d
+from scipy.ndimage import filters
 
 
 def eigenvector_matrix(matrix, dims):
@@ -87,27 +89,31 @@ def hue_to_rgb(hue, saturation):
 
 
 class EdgeDetectionResult:
-    def __init__(self, magnitudes, directions):
-        self.directions = directions
-        self.magnitudes = magnitudes
+    def __init__(self, prefix):
+        self.prefix = prefix + "_"
+        self.images = {}
 
-    def magnitudes_image(self):
+    def add_grayvalue_image(self, name, grayvalues):
         """
         Creates an image of the magnitudes.
         """
-        return Image(self.magnitudes * 255)
+        self.images[name] = Image(grayvalues)
 
-    def directions_image(self):
+    def add_radians_image(self, name, radians):
         """
         Creates an image of the directions.
         """
-        height, width = self.directions.shape
+        height, width = radians.shape
         img = np.zeros((height, width, 3))
         for y in range(height):
             for x in range(width):
-                img[y, x, :] = hue_to_rgb(self.directions[y, x], abs(self.magnitudes[y, x]))
+                img[y, x, :] = hue_to_rgb(radians[y, x], 1)
 
-        return Image(img)
+        self.images[name] = Image(img)
+
+    def save_images(self):
+        for name in self.images.iterkeys():
+            self.images[name].save(self.prefix + name + ".png")
 
 
 class Image:
@@ -145,72 +151,55 @@ class Image:
         :return: (magnitudes, directions)
         """
 
-        # Normalize image to 0..1
-        g = self.image.copy() / 255
+        roberts_cross_operator = np.array([[+0 - 1j, 1 + 0j],
+                                           [-1 + 0j, 0 + 1j]])  # G1 + j*G2
+        grad = convolve2d(self.image, roberts_cross_operator, boundary='symm', mode='same')
 
-        # Get image dimensions and create resulting images
-        shape = g.shape
-        magnitudes = np.zeros(shape)
-        directions = np.zeros(shape)
-        height, width = shape
+        result = EdgeDetectionResult("roberts_cross")
+        result.add_grayvalue_image("magnitudes", np.absolute(grad))
+        result.add_radians_image("directions", np.angle(grad))
+        result.add_grayvalue_image("d1", np.real(grad))
+        result.add_grayvalue_image("d2", np.imag(grad))
 
-        for y in range(height):
-            y1 = max(y - 1, 0)
-            y2 = y
-            for x in range(width):
-                x1 = max(x - 1, 0)
-                x2 = x
-
-                delta_1 = g[y1, x2] - g[y2, x1]
-                delta_2 = g[y1, x1] - g[y2, x2]
-
-                # Calculate direction
-                directions[y, x] = math.atan2(delta_2, delta_1)
-
-                # Save normalized (0..1) magnitude
-                magnitudes[y, x] = math.sqrt(delta_1 ** 2 + delta_2 ** 2)
-
-        return EdgeDetectionResult(magnitudes, directions)
+        return result
 
     def sobel(self):
         """
         Calculates the Sobel operator on this image.
-        :return: (magnitudes, directions)
+        :return: edge detection result with 4 images
         """
 
-        # Normalize image to 0..1
-        g = self.image.copy() / 255
+        sobel_operator = np.array([[-1-1j, +0-2j, +1-1j],
+                                   [-2+0j, +0+0j, +2+0j],
+                                   [-1+1j, +0+2j, +1+1j]])  # Gx + j*Gy
+        grad = convolve2d(self.image, sobel_operator, boundary='symm', mode='same')
 
-        # Get image dimensions and create resulting images
-        shape = g.shape
-        magnitudes = np.zeros(shape)
-        directions = np.zeros(shape)
-        height, width = shape
+        result = EdgeDetectionResult("sobel")
+        result.add_grayvalue_image("magnitudes", np.absolute(grad))
+        result.add_radians_image("directions", np.angle(grad))
+        result.add_grayvalue_image("dx", np.real(grad))
+        result.add_grayvalue_image("dy", np.imag(grad))
 
-        for y in range(height):
-            y1 = max(y - 1, 0)
-            y2 = y
-            y3 = min(y + 1, height - 1)
-            for x in range(width):
-                x1 = max(x - 1, 0)
-                x2 = x
-                x3 = min(x + 1, width - 1)
+        return result
 
-                # delta_x in -4..4
-                delta_x = g[y1, x3] + 2 * g[y2, x3] + g[y3, x3] \
-                        - g[y1, x1] - 2 * g[y2, x1] - g[y3, x1]
+    def scharr(self):
+        """
+        Calculates the Scharr operator on this image.
+        :return: edge detection result with 4 images
+        """
 
-                # delta_y in -4..4
-                delta_y = g[y3, x1] + 2 * g[y3, x2] + g[y3, x3] \
-                        - g[y1, x1] - 2 * g[y1, x2] - g[y1, x3]
+        scharr_operator = np.array([[ -3-3j, 0-10j,  +3 -3j],
+                                    [-10+0j, 0+ 0j, +10 +0j],
+                                    [ -3+3j, 0+10j,  +3 +3j]])  # Gx + j*Gy
+        grad = convolve2d(self.image, scharr_operator, boundary='symm', mode='same')
 
-                # Calculate direction
-                directions[y, x] = math.atan2(delta_y, delta_x)
+        result = EdgeDetectionResult("scharr")
+        result.add_grayvalue_image("magnitudes", np.absolute(grad))
+        result.add_radians_image("directions", np.angle(grad))
+        result.add_grayvalue_image("dx", np.real(grad))
+        result.add_grayvalue_image("dy", np.imag(grad))
 
-                # Save magnitude
-                magnitudes[y, x] = math.sqrt(delta_x ** 2 + delta_y ** 2)
-
-        return EdgeDetectionResult(magnitudes, directions)
+        return result
 
     def kirsch(self):
         """
@@ -242,12 +231,16 @@ class Image:
                 k_max = np.argsort(magns)[7]
 
                 # Calculate direction
-                directions[y, x] = math.pi * ((2 + k_max) % 8) / 4
+                directions[y, x] = math.pi * ((4 + 2 + k_max) % 8) / 4
 
                 # Get highest magnitude
                 magnitudes[y, x] = magns[k_max]
 
-        return EdgeDetectionResult(magnitudes, directions)
+        result = EdgeDetectionResult("kirsch")
+        result.add_grayvalue_image("magnitudes", magnitudes)
+        result.add_radians_image("directions", directions)
+
+        return result
 
     def laplacian(self):
         """
@@ -255,33 +248,15 @@ class Image:
         :return: (magnitudes, directions)
         """
 
-        # Normalize image to 0..1
-        g = self.image.copy() / 255
+        laplacian_operator = np.array([[0,  1, 0],
+                                       [1, -4, 1],
+                                       [0,  1, 0]])
+        grad = convolve2d(self.image, laplacian_operator, boundary='symm', mode='same')
 
-        # Get image dimensions and create resulting images
-        shape = g.shape
-        magnitudes = np.zeros(shape)
-        height, width = shape
+        result = EdgeDetectionResult("laplace")
+        result.add_grayvalue_image("d2", grad)
 
-        # Some helper vars for optimization
-
-        for y in range(height):
-            y1 = max(y - 1, 0)
-            y2 = y
-            y3 = min(y + 1, height - 1)
-            for x in range(width):
-                x1 = max(x - 1, 0)
-                x2 = x
-                x3 = min(x + 1, width - 1)
-
-                nabla2 = (g[y2, x3] - g[y2, x2]) - (g[y2, x2] - g[y2, x1]) \
-                       + (g[y3, x2] - g[y2, x2]) - (g[y2, x2] - g[y1, x2])
-
-                # Normalization to 0..255
-                magnitudes[y, x] = nabla2
-
-        return Image(magnitudes)
-
+        return result
 
 
 if __name__ == '__main__':
@@ -317,27 +292,26 @@ if __name__ == '__main__':
 
     print('Applying Robert\'s Cross operator ...'),
     roberts_cross = lena.roberts_cross()
-    roberts_cross.magnitudes_image().save("roberts_cross_magnitudes.png")
-    roberts_cross.directions_image().save("roberts_cross_directions.png")
-    roberts_cross.magnitudes_image().laplacian().save("roberts_cross_laplacian.png")
+    roberts_cross.save_images()
     print('done.')
 
     print('Applying Sobel operator ...'),
     sobel = lena.sobel()
-    sobel.magnitudes_image().save("sobel_magnitudes.png")
-    sobel.directions_image().save("sobel_directions.png")
-    sobel.magnitudes_image().laplacian().save("sobel_laplacian.png")
+    sobel.save_images()
     print('done.')
 
     print('Applying Kirsch operator ...'),
     kirsch = lena.kirsch()
-    kirsch.magnitudes_image().save("kirsch_magnitudes.png")
-    kirsch.directions_image().save("kirsch_directions.png")
-    kirsch.magnitudes_image().laplacian().save("kirsch_laplacian.png")
+    kirsch.save_images()
+    print('done.')
+
+    print('Applying Scharr operator ...'),
+    kirsch = lena.scharr()
+    kirsch.save_images()
     print('done.')
 
     print('Applying Laplacian operator ...'),
     laplacian = lena.laplacian()
-    laplacian.save("laplacian.png")
+    laplacian.save_images()
     print('done.')
 
