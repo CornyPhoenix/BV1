@@ -64,6 +64,6 @@ print x2
 
 # (-> Task 2.1 b)
 
-print A_3.T*A_3
+#print A_3.T*A_3
 # Take the first line:
 # [0.75 0.25 0.25 -0.25]

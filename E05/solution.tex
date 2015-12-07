@@ -12,6 +12,8 @@
 \usepackage{tabularx}
 \usepackage{todonotes}
 \usepackage{verbatim}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
 
 %\titleformat{\subsection}[hang]{\large\bfseries}{\alph{subsection})\quad}{0pt}{}
 
@@ -29,7 +31,7 @@
 	\subsection{(Lossless) Image Compression}
 	
 	\paragraph{a)} % What is the entropy of such documents?
-	The so-called \textit{entropy} of such documents can be computed using following formula:
+	The \textit{entropy} of such documents can be computed using the following formula:
 	\begin{align*}
 	H = \sum_{g=0}^{G-1} P(g) \cdot \log_{2}\left(\frac{1}{P(g)}\right)
 	\end{align*}
@@ -64,10 +66,7 @@
 	&\approx 0.570998
 	\end{align*}
 	
-	Basically, this value tells how much information is contained in these documents. In general, the more uncertain or random the event is, the more information it will contain. Because, in 90\% of the cases the color will be white, there is no uncertainty, leading to this rather low entropy value. On the otherhand, the entropy with equally probable colors is equal to the number of bits required for coding. \footnote{\url{https://simple.wikipedia.org/wiki/Information_entropy}}
-	
-	\vspace{12pt}
-	\todo[inline]{Sibel: Will rephrase this paragraph!}
+	Basically, the calculated value tells how much information is contained in these documents. One can say that the more unpredictable the color of the pixels in the document is, the more information the overall document will contain. For the statistics given above however, it is to be expected that the entropy value is pretty low: There is low uncertainty as to what color a pixel will be, with a 90\% probability of it being white, yielding this low of a value for the entropy. If all colors were approximately equally probable on the other hand, the entropy would be somewhat equal to the number of bits required for coding.\footnote{\url{https://simple.wikipedia.org/wiki/Information_entropy}}
 	
 	\begin{comment}
 		Very intuitive example from "Simple Wikipedia":
@@ -78,14 +77,13 @@
 	\end{comment}
 	
 	\paragraph{b)} % Design a Huffman code for the pixels.
-	See \Cref{fig:huffman_code}.
+	See \Cref{fig:huffman_code} for the resulting Huffman code.
 	\begin{figure*}[t]
-		\begin{minipage}{0.45\textwidth}
-			%\includegraphics[width=\linewidth]{imagefile}
-			\todo[inline]{Sibel: Image will be added soon!}
+		\begin{minipage}{0.5\textwidth}
+			\includegraphics[width=\linewidth]{figures/huffman_code.png}
 		\end{minipage}
 		\hfill
-		\begin{minipage}{0.45\textwidth}
+		\begin{minipage}{0.4\textwidth}
 			\begin{tabular}{l r r c}
 				\textbf{Color} & \textbf{Probability} & \textbf{Code} & \textbf{Length}\\
 				\hline
@@ -97,7 +95,7 @@
 				Yellow & 0.001 & 11111 & 5
 			\end{tabular}
 		\end{minipage}
-		\caption{TODO}
+		\caption{\textit{Left:} Applying the Huffman coding scheme to create variable-length codes with minimal average code word length for the colors. \textit{Right:} The resulting color code words and their lengths.}
 		\label{fig:huffman_code}
 	\end{figure*}
 	
@@ -152,15 +150,76 @@
 	
 	\subsection{(Lossy) Image Compression}
 	
-	\paragraph{a)} See file \texttt{task\_2\_1.py}.
+	\paragraph{a)} See file \texttt{task\_2\_1.py} for the computation.
 	
-	\vspace{12pt}
-	\todo[inline]{Sibel@Nour: I changed a little bit in your implementation. You forgot to sort the eigenvectors according to their corresponding eigenvalues and take the eigenvectors for the three largest eigenvalues. Then, I renamed some of the variables with more expressive names, because I started to get confused. I hope that's ok. :)}
-	
-	\paragraph{b)} -
-	
-	\vspace{12pt}
-	\todo[inline]{Sibel: I have an idea for this part, will add it soon!}
+	\paragraph{b)} % What is the mean quadratic error (MSE) for x_1' when it is reconstructed using A_3^T?
+	The Karhunen-Loève compression technique can, for instance, be used to code $2 \times 2$ images with pixels $x_1, x_2, x_3$ and $x_4$ with 3 values, namely $y_1, y_2$ and $y_3$, by means of the transform matrix $A_3$:
+	\begin{align*}
+	\begin{bmatrix}
+	y_1 \\ y_2 \\ y_3
+	\end{bmatrix}
+	= A_3 \cdot 
+	\begin{bmatrix}
+	x_1 \\ x_2 \\ x_3 \\ x_4
+	\end{bmatrix}
+	\end{align*}
+	This is done in a way that the original image can easily be reconstructed from the compressed values with minimal error with the help of the very same, but now transposed, transform matrix $A_3$:
+	\begin{align*}
+	\begin{bmatrix}
+	x_1^{\prime} \\ x_2^{\prime} \\ x_3^{\prime} \\ x_4^{\prime}
+	\end{bmatrix}
+	= A_3^T \cdot
+	\begin{bmatrix}
+	y_1 \\ y_2 \\ y_3
+	\end{bmatrix}
+	\end{align*}
+	Because this compression is lossy, the original image will not be reconstructed perfectly. However, the reconstructed image will be somewhat close enough to the original: 
+	\begin{align*}
+	\begin{bmatrix}
+	x_1^{\prime} \\ x_2^{\prime} \\ x_3^{\prime} \\ x_4^{\prime}
+	\end{bmatrix}
+	= A_3^T \cdot A_3 \cdot 
+	\begin{bmatrix}
+	x_1 \\ x_2 \\ x_3 \\ x_4
+	\end{bmatrix} 
+	\end{align*}
+	As a matter of fact, $A_3^T \cdot A_3$ is a matrix that faintly resembles the identity matrix. For example, for the previously computed $3 \times 4$ transform matrix
+	\begin{align*}
+	A_3 =
+	\begin{bmatrix}
+	-0.5 & -0.5 & -0.5 & -0.5 \\
+	-0.5 & 0.5 & -0.5 & 0.5 \\
+	-0.5 & -0.5 & 0.5 & 0.5
+	\end{bmatrix}
+	\end{align*}
+	we get:
+	\begin{align*}
+	A_3^T \cdot A_3 =
+	\begin{bmatrix}
+	0.75 & 0.25 & 0.25 & -0.25 \\
+	0.25 & 0.75 & -0.25 & 0.25 \\
+	0.25 & -0.25 & 0.75 & 0.25 \\
+	-0.25 & 0.25 & 0.25 & 0.75 \\
+	\end{bmatrix}
+	\end{align*}
+	For $x_1^{\prime}$:
+	\begin{align*}
+	x_1^{\prime} &=
+	\begin{bmatrix}
+	0.75 & 0.25 & 0.25 & -0.25
+	\end{bmatrix}
+	\cdot
+	\begin{bmatrix}
+	x_1 \\ x_2 \\ x_3 \\ x_4
+	\end{bmatrix} \\
+	&= 0.75 \cdot x_1 + 0.25 \cdot x_2 + 0.25 \cdot x_3 - 0.25 \cdot x_4
+	\end{align*}
+	In statistics, the mean squared error (MSE) of an estimator measures the average of the squares of the "errors", that is, the difference between the estimator and what is estimated. 
+	\begin{align*}
+	&(x_1^{\prime} - x_1)^2 \\
+	&= (0.75 \cdot x_1 + 0.25 \cdot x_2 + 0.25 \cdot x_3 - 0.25 \cdot x_4 - x_1)^2 \\
+	&= (-0.25 \cdot x_1 + 0.25 \cdot x_2 + 0.25 \cdot x_3 - 0.25 \cdot x_4)^2
+	\end{align*}
 	
 	\subsection{Operators for Edge Detection}
 	
