@@ -9,6 +9,7 @@
 \usepackage{graphicx}
 \usepackage{titlesec}
 \usepackage{longtable}
+\usepackage{wrapfig}
 
 \titleformat{\section}[hang]{\Large\bfseries}{\Roman{section}\quad}{0pt}{}
 \titleformat{\subsection}[hang]{\large\bfseries}{\arabic{subsection}.\quad}{0pt}{}
@@ -122,35 +123,85 @@
 	\subsubsection{Error}
 	$MSE = 2.5175756233 \cdot 10^{-30}$
 	
+	\newlength{\colwidth}
+	\newlength{\colsep}
+	\setlength{\colsep}{8mm}
+	\setlength{\colwidth}{\dimexpr.25\textwidth-.75\colsep}
+	
+	\begin{wrapfigure}{r}{\colwidth}
+		\includegraphics[width=\colwidth]{lena}
+		
+		Original Image
+	\end{wrapfigure}
+	
 	\subsection{Operators for Edge detection}
+	
+	The Kirsch, Sobel and Scharr operators are not as susceptible to noise as the other two and are thus preferable in real world scenarios. We would prefer the \textbf{Sobel operator} most, because with it it's the easiest to recognize details of the face like eyes, lips and nose.
 	
 	This how the angles are colored in the following direction images: \quad
 	
-	\begin{longtable}{@{}p{\dimexpr\textwidth-8.5cm}@{}p{4cm}@{\hspace{.5cm}}p{4cm}@{}}
-		& \raisebox{-\totalheight}{\includegraphics[width=\linewidth]{lena}} \linebreak \textit{Original Image}&\\
 %		
-		a) \textbf{Robert's Cross operator} \par
+		\subsubsection{Robert's Cross operator}
 		Looks very noisy
-		& \raisebox{-\totalheight}{\includegraphics[width=\linewidth]{roberts_cross_magnitudes}} \linebreak \textit{Magnitudes}
-		& \raisebox{-\totalheight}{\includegraphics[width=\linewidth]{roberts_cross_directions}} \linebreak[1cm] \textit{Directions}\\
-%		
-		b) \textbf{Sobel operator} \par
-		& \raisebox{-\totalheight}{\includegraphics[width=\linewidth]{sobel_magnitudes}} \linebreak \textit{Magnitudes}
-		& \raisebox{-\totalheight}{\includegraphics[width=\linewidth]{sobel_directions}} \linebreak \textit{Directions}\\
-%		
-		c) \textbf{Kirsch operator}  \par
-		& \raisebox{-\totalheight}{\includegraphics[width=\linewidth]{kirsch_magnitudes}} \linebreak \textit{Magnitudes}
-		& \raisebox{-\totalheight}{\includegraphics[width=\linewidth]{kirsch_directions}} \linebreak \textit{Directions}\\
-%		
-		d) \textbf{Laplacian operator} \par
-		& \raisebox{-\totalheight}{\includegraphics[width=\linewidth]{laplace_d2}} \linebreak \textit{2\raisebox{2pt}{\footnotesize nd} Derivative}
-		&\\
 		
-		Extra: \textbf{Scharr operator}  \par
-		& \raisebox{-\totalheight}{\includegraphics[width=\linewidth]{scharr_magnitudes}} \linebreak \textit{Magnitudes}
-		& \raisebox{-\totalheight}{\includegraphics[width=\linewidth]{scharr_directions}} \linebreak \textit{Directions}\\
-	\end{longtable}
-	
-	The Kirsch and Sobel operators are not as susceptible to noise as the other two and are thus preferable in real world scenarios. We would prefer the \textbf{Sobel operator}, because with it it's the easiest to recognize details of the face like eyes, lips and nose.
+		\begin{longtable}{@{}p{\colwidth}@{\hspace*{\colsep}}p{\colwidth}@{\hspace{\colsep}}p{\colwidth}@{\hspace{\colsep}}p{\colwidth}@{}}
+			\includegraphics[width=\linewidth]{img/roberts_cross_real} &
+			\includegraphics[width=\linewidth]{img/roberts_cross_imag} &
+			\includegraphics[width=\linewidth]{img/roberts_cross_magnitudes} &
+			\includegraphics[width=\linewidth]{img/roberts_cross_directions} \\
+			Diagonal top right to bottom left &
+			Diagonal bottom right to top left &
+			Magnitudes $|\nabla g|$ &
+			Directions \\
+		\end{longtable}
+%		
+		\subsubsection{Sobel operator}
+		\begin{longtable}{@{}p{\colwidth}@{\hspace*{\colsep}}p{\colwidth}@{\hspace{\colsep}}p{\colwidth}@{\hspace{\colsep}}p{\colwidth}@{}}
+			\includegraphics[width=\linewidth]{img/sobel_real} &
+			\includegraphics[width=\linewidth]{img/sobel_imag} &
+			\includegraphics[width=\linewidth]{img/sobel_magnitudes} &
+			\includegraphics[width=\linewidth]{img/sobel_directions} \\
+			X-Deviation $\frac{\partial x}{\partial g}$ &
+			Y-Deviation $\frac{\partial y}{\partial g}$ &
+			Magnitudes $|\nabla g|$ &
+			Directions \\
+		\end{longtable}
+		
+		\subsubsection{Kirsch operator}
+		\begin{longtable}{@{}p{\colwidth}@{\hspace*{\colsep}}p{\colwidth}@{\hspace{\colsep}}p{\colwidth}@{\hspace{\colsep}}p{\colwidth}@{}}
+%			\includegraphics[width=\linewidth]{img/kirsch_real} &
+%			\includegraphics[width=\linewidth]{img/kirsch_imag} &
+			\includegraphics[width=\linewidth]{img/kirsch_magnitudes} &
+			\includegraphics[width=\linewidth]{img/kirsch_directions} &&\\
+%			X-Deviation $\frac{\partial x}{\partial g}$ &
+%			Y-Deviation $\frac{\partial y}{\partial g}$ &
+			Magnitudes $|\nabla g|$ &
+			Directions &&\\
+		\end{longtable}
+%		& \raisebox{-\totalheight}{\includegraphics[width=\linewidth]{kirsch_magnitudes}} \linebreak \textit{Magnitudes}
+%		& \raisebox{-\totalheight}{\includegraphics[width=\linewidth]{kirsch_directions}} \linebreak \textit{Directions}\\
+%%		
+		\subsubsection{Laplacian operator}
+		\begin{longtable}{@{}p{\colwidth}@{\hspace*{\colsep}}p{\colwidth}@{\hspace{\colsep}}p{\colwidth}@{\hspace{\colsep}}p{\colwidth}@{}}
+			%			\includegraphics[width=\linewidth]{kirsch_real} &
+			%			\includegraphics[width=\linewidth]{kirsch_imag} &
+			\includegraphics[width=\linewidth]{img/laplacian_real} &&&\\
+%			\includegraphics[width=\linewidth]{kirsch_directions} &&\\
+			%			X-Deviation $\frac{\partial x}{\partial g}$ &
+			%			Y-Deviation $\frac{\partial y}{\partial g}$ &
+			Derivative $\nabla^2 g$ &&&\\
+%			Directions &&\\
+		\end{longtable}
 
+		\subsubsection{Extra: Scharr operator}
+		\begin{longtable}{@{}p{\colwidth}@{\hspace*{\colsep}}p{\colwidth}@{\hspace{\colsep}}p{\colwidth}@{\hspace{\colsep}}p{\colwidth}@{}}
+			\includegraphics[width=\linewidth]{img/scharr_real} &
+			\includegraphics[width=\linewidth]{img/scharr_imag} &
+			\includegraphics[width=\linewidth]{img/scharr_magnitudes} &
+			\includegraphics[width=\linewidth]{img/scharr_directions} \\
+			X-Deviation $\frac{\partial x}{\partial g}$ &
+			Y-Deviation $\frac{\partial y}{\partial g}$ &
+			Magnitudes $|\nabla g|$ &
+			Directions \\
+		\end{longtable}
 \end{document}
