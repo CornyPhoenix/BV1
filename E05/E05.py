@@ -272,7 +272,7 @@ class Image:
                 magnitudes[y, x] = magns[k_max]
 
         result = EdgeDetectionResult("kirsch", [])
-        result.save_magnitudes(magnitudes)
+        result.save_magnitudes(-magnitudes)
         result.save_directions(directions)
 
         return result

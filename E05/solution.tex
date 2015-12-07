@@ -28,7 +28,7 @@
 	
 	\subsubsection{Entropy}
 	
-	We calculate the entropy of the document by obtaining the mean number of bits which are required to encode the information of this source. Therefor, we are determine the mean value of all expectable number of bits needed to encode each value. The mean of a value array is calculated by a weighted sum of those values; with the probability being the weight.
+	We calculate the entropy of the document by obtaining the mean number of bits which are required to encode the information of this source. Therefor, we determine the mean value of all expectable number of bits needed to encode each value. The mean of a value array is calculated by a weighted sum of those values; with the probability being the weight.
 	
 	\begin{align*}
 	\text{Num. of values }G	&= 6 \\
@@ -123,27 +123,30 @@
 	\subsubsection{Error}
 	$MSE = 2.5175756233 \cdot 10^{-30}$
 	
+	\subsection{Operators for Edge detection}
+	
 	\newlength{\colwidth}
 	\newlength{\colsep}
 	\setlength{\colsep}{8mm}
 	\setlength{\colwidth}{\dimexpr.25\textwidth-.75\colsep}
 	
-	\begin{wrapfigure}{r}{\colwidth}
-		\includegraphics[width=\colwidth]{lena}
-		
+	\begin{wrapfigure}{R}{\colwidth}
+		\includegraphics[width=\colwidth]{lena}\\
 		Original Image
 	\end{wrapfigure}
 	
-	\subsection{Operators for Edge detection}
+	The Kirsch, Sobel, Prewitt and Scharr operators are not as susceptible to noise as the other two and are thus preferable in real world scenarios. So, ee would prefer the \textbf{Sobel operator}, because it determines the most detailed edges of the face. It is easier to recognize eyes, lips and nose.
 	
-	The Kirsch, Sobel and Scharr operators are not as susceptible to noise as the other two and are thus preferable in real world scenarios. We would prefer the \textbf{Sobel operator} most, because with it it's the easiest to recognize details of the face like eyes, lips and nose.
+	However, it would be a better choice to take the \textbf{Scharr operator}, because it is considering the radio-symmetry more than the Sobel operator. So diagonal pixels are weighted more according to their distance to the center pixel.
 	
-	This how the angles are colored in the following direction images: \quad
+	The Laplacian operator would also be considerable, because it is really fast and this may be a good approximation for a fast result in a real-time application.
 	
+	We are now presenting our resulting images. The following compass shows how the angles are colored in the direction images: \quad
+	
+	\includegraphics[scale=.2]{kompass}
 %		
-		\subsubsection{Robert's Cross operator}
-		Looks very noisy
-		
+\newpage
+		\subsubsection{Robert's Cross operator}		
 		\begin{longtable}{@{}p{\colwidth}@{\hspace*{\colsep}}p{\colwidth}@{\hspace{\colsep}}p{\colwidth}@{\hspace{\colsep}}p{\colwidth}@{}}
 			\includegraphics[width=\linewidth]{img/roberts_cross_real} &
 			\includegraphics[width=\linewidth]{img/roberts_cross_imag} &
@@ -156,11 +159,38 @@
 		\end{longtable}
 %		
 		\subsubsection{Sobel operator}
+		Weighting diagonal pixels with 1 and direct neighbor pixels with 2.
 		\begin{longtable}{@{}p{\colwidth}@{\hspace*{\colsep}}p{\colwidth}@{\hspace{\colsep}}p{\colwidth}@{\hspace{\colsep}}p{\colwidth}@{}}
 			\includegraphics[width=\linewidth]{img/sobel_real} &
 			\includegraphics[width=\linewidth]{img/sobel_imag} &
 			\includegraphics[width=\linewidth]{img/sobel_magnitudes} &
 			\includegraphics[width=\linewidth]{img/sobel_directions} \\
+			X-Deviation $\frac{\partial x}{\partial g}$ &
+			Y-Deviation $\frac{\partial y}{\partial g}$ &
+			Magnitudes $|\nabla g|$ &
+			Directions \\
+		\end{longtable}
+		
+		\noindent Related: \textbf{Scharr operator}, weighting diagonal pixels with 3 and direct neighbor pixels with 10.
+		
+		\begin{longtable}{@{}p{\colwidth}@{\hspace*{\colsep}}p{\colwidth}@{\hspace{\colsep}}p{\colwidth}@{\hspace{\colsep}}p{\colwidth}@{}}
+			\includegraphics[width=\linewidth]{img/scharr_real} &
+			\includegraphics[width=\linewidth]{img/scharr_imag} &
+			\includegraphics[width=\linewidth]{img/scharr_magnitudes} &
+			\includegraphics[width=\linewidth]{img/scharr_directions} \\
+			X-Deviation $\frac{\partial x}{\partial g}$ &
+			Y-Deviation $\frac{\partial y}{\partial g}$ &
+			Magnitudes $|\nabla g|$ &
+			Directions \\
+		\end{longtable}
+		
+		\noindent Related: \textbf{Prewitt operator}, weighting diagonal and direct neighbor pixels with 1.
+		
+		\begin{longtable}{@{}p{\colwidth}@{\hspace*{\colsep}}p{\colwidth}@{\hspace{\colsep}}p{\colwidth}@{\hspace{\colsep}}p{\colwidth}@{}}
+			\includegraphics[width=\linewidth]{img/prewitt_real} &
+			\includegraphics[width=\linewidth]{img/prewitt_imag} &
+			\includegraphics[width=\linewidth]{img/prewitt_magnitudes} &
+			\includegraphics[width=\linewidth]{img/prewitt_directions} \\
 			X-Deviation $\frac{\partial x}{\partial g}$ &
 			Y-Deviation $\frac{\partial y}{\partial g}$ &
 			Magnitudes $|\nabla g|$ &
@@ -192,16 +222,5 @@
 			Derivative $\nabla^2 g$ &&&\\
 %			Directions &&\\
 		\end{longtable}
-
-		\subsubsection{Extra: Scharr operator}
-		\begin{longtable}{@{}p{\colwidth}@{\hspace*{\colsep}}p{\colwidth}@{\hspace{\colsep}}p{\colwidth}@{\hspace{\colsep}}p{\colwidth}@{}}
-			\includegraphics[width=\linewidth]{img/scharr_real} &
-			\includegraphics[width=\linewidth]{img/scharr_imag} &
-			\includegraphics[width=\linewidth]{img/scharr_magnitudes} &
-			\includegraphics[width=\linewidth]{img/scharr_directions} \\
-			X-Deviation $\frac{\partial x}{\partial g}$ &
-			Y-Deviation $\frac{\partial y}{\partial g}$ &
-			Magnitudes $|\nabla g|$ &
-			Directions \\
-		\end{longtable}
+		
 \end{document}
