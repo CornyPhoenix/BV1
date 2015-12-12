@@ -129,6 +129,7 @@
 	
 	
 	\paragraph{b)} % Does the bi-modality of the image histogram guarantee successful image segmentation if threshold-based image segmentation is applied and the threshold is selected in the minimum between the two histogram maxima?
+	No, because the bi-modality of the histogram indicates that the image has two areas with high contrast, but does not guarantee that we can segment the object from the background in an image. For example, if the image has non-uniform illumination conditions, it is not possible to segment the object in the image based on a unique threshold, because the threshold-based segmentation relies only on the distribution of the intensity values of the image and not on its spatial properties, such as edge-detection.
 	
 	\paragraph{c)} % Explain the need of component labeling for object detection after thresholding.
 	
