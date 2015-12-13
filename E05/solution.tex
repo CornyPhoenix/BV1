@@ -126,7 +126,7 @@
 	\subsection{Image Segmentation}
 	
 	\paragraph{a)} % When may simple threshold-based segmentation approaches be applicable for image segmentation, when not? Give at least one example for each.
-	Threshold-based segmentation approaches can be applicable for image segmentation, only if the image has contrast between the whole object we want to segment and the background in uniform illumination conditions. For example, see Fig. 1 & 2 below.
+	Threshold-based segmentation approaches can be applicable for image segmentation, only if the image has contrast between the whole object we want to segment and the background in uniform illumination conditions. For example, see Fig. 1 \& 2 below.
 	
 	
 	\paragraph{b)} % Does the bi-modality of the image histogram guarantee successful image segmentation if threshold-based image segmentation is applied and the threshold is selected in the minimum between the two histogram maxima?
@@ -134,18 +134,19 @@
 	
 	\paragraph{c)} % Explain the need of component labeling for object detection after thresholding.
 	
-	The need of component labeling for object detection after thresholding is due to the classification/distinguishment of pixels in each region of the image.
+	The need of component labeling for object detection after thresholding is due to the classification/distinction of pixels in each region of the image.
 	
 	\paragraph{d)} % What is the most typical problem in edge detection approaches? How does the Canny-algorithm try to enhance the segmentation quality?
 
-	The most common problem in edge detection aaproaches is its sensitvity to noise, which makes edge detection inaccurate.
+	The most common problem in edge detection approaches is its sensitivity to noise, which makes edge detection inaccurate.
 	
-	Canny-Algorithm:
-	What Canny-algorithm does is that it takes the sobel operator and use is to thin the orientation of the edge, and then use the thresholding to find dominant edges in the image.
-	The optimality of canny edge detection consists of the following criterion:
-	1) The detection, which indicates all the important edges should not be missed.
-	2) The localization, which minimizes the distance between the actual and the located position of the egdes.
-	3) The one response, which minimizes multiple reponses to a single edge. Hence, reduces noise.
+	What Canny-algorithm does is that it takes the Sobel operator and use is to thin the orientation of the edge, and then use the thresholding to find dominant edges in the image.
+	The optimality of Canny edge detection consists of the following criterion:
+	\begin{enumerate}
+	\item The detection, which indicates all the important edges should not be missed.
+	\item The localization, which minimizes the distance between the actual and the located position of the edges.
+	\item The one response, which minimizes multiple responses to a single edge. Hence, reduces noise.
+	\end{enumerate}
 	
 	
 	\section{Practical Problems}
@@ -185,7 +186,7 @@
 	x_1 \\ x_2 \\ x_3 \\ x_4
 	\end{bmatrix} 
 	\end{align*}
-	As a matter of fact, $A_3^T \cdot A_3$ is a matrix that faintly resembles the identity matrix. For example, for the previously computed $3 \times 4$ transform matrix
+	As a matter of fact, $A_3^T \cdot A_3$ is a matrix that very faintly resembles the identity matrix. For example, for the previously computed $3 \times 4$ transform matrix
 	\begin{align*}
 	A_3 =
 	\begin{bmatrix}
@@ -204,7 +205,7 @@
 	-0.25 & 0.25 & 0.25 & 0.75 \\
 	\end{bmatrix}
 	\end{align*}
-	For $x_1^{\prime}$:
+	The reconstructed $x_1^{\prime}$ is obtained by multiplying the first row of the result of $A_3^T \cdot A_3$ with the original $2 \times 2$ image:
 	\begin{align*}
 	x_1^{\prime} &=
 	\begin{bmatrix}
@@ -216,7 +217,7 @@
 	\end{bmatrix} \\
 	&= 0.75 \cdot x_1 + 0.25 \cdot x_2 + 0.25 \cdot x_3 - 0.25 \cdot x_4
 	\end{align*}
-	In statistics, the mean squared error (MSE) of an estimator measures the average of the squares of the "errors", that is, the difference between the estimator and what is estimated. 
+	With the \textit{mean squared error} (MSE) we can measure the difference between the pixel value $x_1$ in the original image and the corresponding pixel value $x_1^{\prime}$ in the image reconstructed with $A_3^T$ after having performed the lossy compression with $A_3$:
 	\begin{align*}
 	&(x_1^{\prime} - x_1)^2 \\
 	&= (0.75 \cdot x_1 + 0.25 \cdot x_2 + 0.25 \cdot x_3 - 0.25 \cdot x_4 - x_1)^2 \\
