@@ -126,8 +126,21 @@
 	\subsection{Image Segmentation}
 	
 	\paragraph{a)} % When may simple threshold-based segmentation approaches be applicable for image segmentation, when not? Give at least one example for each.
-	Threshold-based segmentation approaches can be applicable for image segmentation, only if the image has contrast between the whole object we want to segment and the background in uniform illumination conditions. For example, see Fig. 1 \& 2 below.
+	Threshold-based segmentation approaches can be applicable for image segmentation, only if the image has contrast between the whole object we want to segment and the background in uniform illumination conditions. For example, see \Cref{fig:image_segmentation} below.
 	
+	\begin{figure*}
+	\begin{minipage}{0.49\textwidth}
+	\includegraphics[width=\linewidth]{figures/uniform_lighting.png}
+	\small \textit{Source:} \url{http://www.mathworks.com/matlabcentral/answers/uploaded_files/15310/Untitled.png}
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.49\textwidth}
+	\includegraphics[width=\linewidth]{figures/non_uniform_lighting.png}
+	\small \textit{Source:} \url{http://www.mathworks.com/matlabcentral/answers/uploaded_files/15308/Untitled.png}
+	\end{minipage}
+	\caption{\textit{Left:} Optimal result of image segmentation in case of uniform lighting. \textit{Right:} Bad result obtained in case of non-uniform lighting in the scene.}
+	\label{fig:image_segmentation}
+	\end{figure*}
 	
 	\paragraph{b)} % Does the bi-modality of the image histogram guarantee successful image segmentation if threshold-based image segmentation is applied and the threshold is selected in the minimum between the two histogram maxima?
 	No, because the bi-modality of the histogram indicates that the image has two areas with high contrast, but does not guarantee that we can segment the object from the background in an image. For example, if the image has non-uniform illumination conditions, it is not possible to segment the object in the image based on a unique threshold, because the threshold-based segmentation relies only on the distribution of the intensity values of the image and not on its spatial properties, such as edge-detection.
